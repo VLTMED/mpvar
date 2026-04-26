@@ -501,16 +501,16 @@ fun FileSystemBrowserScreen(path: String? = null) {
                 placeholder = {
                   Text(
                     if (isAtRoot) {
-                      "Search in all storage volumes..."
+                      "البحث في جميع وحدات التخزين..."
                     } else {
-                      "Search in ${breadcrumbs.lastOrNull()?.name ?: "folder"}..."
+                      "البحث في ${breadcrumbs.lastOrNull()?.name ?: "المجلد"}..."
                     }
                   )
                 },
                 leadingIcon = {
                   Icon(
                     imageVector = Icons.Filled.Search,
-                    contentDescription = "Search",
+                    contentDescription = "بحث",
                   )
                 },
                 trailingIcon = {
@@ -522,7 +522,7 @@ fun FileSystemBrowserScreen(path: String? = null) {
                   ) {
                     Icon(
                       imageVector = Icons.Filled.Close,
-                      contentDescription = "Cancel",
+                      contentDescription = "إلغاء",
                     )
                   }
                 },
@@ -544,7 +544,7 @@ fun FileSystemBrowserScreen(path: String? = null) {
             title = if (isAtRoot) {
               stringResource(app.marlboroadvance.mpvex.R.string.app_name)
             } else {
-              breadcrumbs.lastOrNull()?.name ?: "Tree View"
+              breadcrumbs.lastOrNull()?.name ?: "عرض الشجرة"
             },
             isInSelectionMode = isInSelectionMode,
             selectedCount = selectedCount,
@@ -708,7 +708,7 @@ fun FileSystemBrowserScreen(path: String? = null) {
                     TooltipAnchorPosition.Above
                   }
                 ),
-                tooltip = { PlainTooltip { Text("Toggle menu") } },
+                tooltip = { PlainTooltip { Text("تبديل القائمة") } },
                 state = rememberTooltipState(),
               ) {
                 ToggleFloatingActionButton(
@@ -740,7 +740,7 @@ fun FileSystemBrowserScreen(path: String? = null) {
                 filePicker.launch(arrayOf("video/*"))
               },
               icon = { Icon(Icons.Filled.FileOpen, contentDescription = null) },
-              text = { Text(text = "Open File") },
+              text = { Text(text = "فتح ملف") },
             )
 
             FloatingActionButtonMenuItem(
@@ -755,7 +755,7 @@ fun FileSystemBrowserScreen(path: String? = null) {
                 }
               },
               icon = { Icon(Icons.Filled.History, contentDescription = null) },
-              text = { Text(text = "Recently Played") },
+              text = { Text(text = "تشغيلล่าสุด") },
             )
 
             FloatingActionButtonMenuItem(
@@ -764,7 +764,7 @@ fun FileSystemBrowserScreen(path: String? = null) {
                 showLinkDialog.value = true
               },
               icon = { Icon(Icons.Filled.Link, contentDescription = null) },
-              text = { Text(text = "Open Link") },
+              text = { Text(text = "فتح رابط") },
             )
           }
         }
@@ -1223,7 +1223,7 @@ private fun FileSystemBrowserContent(
       ) {
         EmptyState(
           icon = Icons.Filled.Folder,
-          title = "Error loading directory",
+          title = "خطأ في تحميل المجلد",
           message = error,
         )
       }
@@ -1236,8 +1236,8 @@ private fun FileSystemBrowserContent(
       ) {
         EmptyState(
           icon = Icons.Filled.FolderOpen,
-          title = "Empty folder",
-          message = "This folder contains no videos or subfolders",
+          title = "مجلد فارغ",
+          message = "لا يحتوي هذا المجلد على مقاطع فيديو أو مجلدات فرعية",
         )
       }
     }
@@ -1430,7 +1430,7 @@ private fun FileSystemSearchContent(
               color = MaterialTheme.colorScheme.primary,
             )
             Text(
-              text = if (isAtRoot) "Searching all storage volumes..." else "Searching...",
+              text = if (isAtRoot) "جارٍ البحث في جميع وحدات التخزين..." else "جارٍ البحث...",
               style = MaterialTheme.typography.bodyMedium,
               color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -1445,8 +1445,8 @@ private fun FileSystemSearchContent(
         ) {
           EmptyState(
             icon = Icons.Filled.Search,
-            title = "No results found",
-            message = "No files or folders match \"$searchQuery\"",
+            title = "لم يتم العثور على نتائج",
+            message = "لا توجد ملفات أو مجلدات تطابق \"$searchQuery\"",
           )
         }
       }
@@ -1565,7 +1565,7 @@ fun FileSystemSortDialog(
   SortDialog(
     isOpen = isOpen,
     onDismiss = onDismiss,
-    title = "Sort & View Options",
+    title = "خيارات الفرز والعرض",
     sortType = folderSortType.displayName,
     onSortTypeChange = { typeName ->
       app.marlboroadvance.mpvex.preferences.FolderSortType.entries.find { it.displayName == typeName }?.let {
@@ -1591,17 +1591,17 @@ fun FileSystemSortDialog(
     ),
     getLabelForType = { type, _ ->
       when (type) {
-        app.marlboroadvance.mpvex.preferences.FolderSortType.Title.displayName -> Pair("A-Z", "Z-A")
-        app.marlboroadvance.mpvex.preferences.FolderSortType.Date.displayName -> Pair("Oldest", "Newest")
-        app.marlboroadvance.mpvex.preferences.FolderSortType.Size.displayName -> Pair("Smallest", "Largest")
-        else -> Pair("Asc", "Desc")
+        app.marlboroadvance.mpvex.preferences.FolderSortType.Title.displayName -> Pair("أ-ي", "ي-أ")
+        app.marlboroadvance.mpvex.preferences.FolderSortType.Date.displayName -> Pair("الأقدم", "الأحدث")
+        app.marlboroadvance.mpvex.preferences.FolderSortType.Size.displayName -> Pair("الأصغر", "الأكبر")
+        else -> Pair("تصاعدي", "تنازلي")
       }
     },
     showSortOptions = true,
     viewModeSelector = ViewModeSelector(
-      label = "View Mode",
-      firstOptionLabel = "Folder",
-      secondOptionLabel = "Tree",
+      label = "وضع العرض",
+      firstOptionLabel = "مجلد",
+      secondOptionLabel = "شجرة",
       firstOptionIcon = Icons.Filled.ViewModule,
       secondOptionIcon = Icons.Filled.AccountTree,
       isFirstOptionSelected = folderViewMode == app.marlboroadvance.mpvex.preferences.FolderViewMode.AlbumView,
@@ -1616,9 +1616,9 @@ fun FileSystemSortDialog(
       },
     ),
     layoutModeSelector = ViewModeSelector(
-      label = "Layout",
-      firstOptionLabel = "List",
-      secondOptionLabel = "Grid",
+      label = "تخطيط",
+      firstOptionLabel = "قائمة",
+      secondOptionLabel = "شبكة",
       firstOptionIcon = Icons.AutoMirrored.Filled.ViewList,
       secondOptionIcon = Icons.Filled.GridView,
       isFirstOptionSelected = true, // Always list mode
@@ -1630,52 +1630,52 @@ fun FileSystemSortDialog(
     enableLayoutModeOptions = false, // Disabled/grayed out
     visibilityToggles = listOf(
       VisibilityToggle(
-        label = "Video Thumbnails",
+        label = "صور مصغرة للفيديو",
         checked = showVideoThumbnails,
         onCheckedChange = { browserPreferences.showVideoThumbnails.set(it) },
       ),
       VisibilityToggle(
-        label = "Full Name",
+        label = "الاسم الكامل",
         checked = unlimitedNameLines,
         onCheckedChange = { appearancePreferences.unlimitedNameLines.set(it) },
       ),
       VisibilityToggle(
-        label = "Path",
+        label = "المسار",
         checked = showFolderPath,
         onCheckedChange = { browserPreferences.showFolderPath.set(it) },
       ),
       VisibilityToggle(
-        label = "Total Videos",
+        label = "إجمالي مقاطع الفيديو",
         checked = showTotalVideosChip,
         onCheckedChange = { browserPreferences.showTotalVideosChip.set(it) },
       ),
       VisibilityToggle(
-        label = "Folder Size",
+        label = "حجم المجلد",
         checked = showTotalSizeChip,
         onCheckedChange = { browserPreferences.showTotalSizeChip.set(it) },
       ),
       VisibilityToggle(
-        label = "Size",
+        label = "الحجم",
         checked = showSizeChip,
         onCheckedChange = { browserPreferences.showSizeChip.set(it) },
       ),
       VisibilityToggle(
-        label = "Resolution",
+        label = "الدقة",
         checked = showResolutionChip,
         onCheckedChange = { browserPreferences.showResolutionChip.set(it) },
       ),
       VisibilityToggle(
-        label = "Framerate",
+        label = "معدل الإطارات",
         checked = showFramerateInResolution,
         onCheckedChange = { browserPreferences.showFramerateInResolution.set(it) },
       ),
       VisibilityToggle(
-        label = "Subtitle",
+        label = "الترجمة",
         checked = showSubtitleIndicator,
         onCheckedChange = { browserPreferences.showSubtitleIndicator.set(it) },
       ),
       VisibilityToggle(
-        label = "Progress Bar",
+        label = "شريط التقدم",
         checked = showProgressBar,
         onCheckedChange = { browserPreferences.showProgressBar.set(it) },
       ),

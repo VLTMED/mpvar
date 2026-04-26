@@ -184,11 +184,11 @@ object PlaylistScreen : Screen {
                   onSearch = { },
                   expanded = false,
                   onExpandedChange = { },
-                  placeholder = { Text("Search playlists...") },
+                  placeholder = { Text("البحث في قوائم التشغيل...") },
                   leadingIcon = {
                     Icon(
                       imageVector = Icons.Filled.Search,
-                      contentDescription = "Search",
+                      contentDescription = "بحث",
                     )
                   },
                   trailingIcon = {
@@ -200,7 +200,7 @@ object PlaylistScreen : Screen {
                     ) {
                       Icon(
                         imageVector = Icons.Filled.Close,
-                        contentDescription = "Cancel",
+                        contentDescription = "إلغاء",
                       )
                     }
                   },
@@ -219,7 +219,7 @@ object PlaylistScreen : Screen {
             }
           } else {
             BrowserTopBar(
-              title = "Playlists",
+              title = "قوائم التشغيل",
               isInSelectionMode = selectionManager.isInSelectionMode,
               selectedCount = selectionManager.selectedCount,
               totalCount = playlistsWithCount.size,
@@ -246,7 +246,7 @@ object PlaylistScreen : Screen {
             ExtendedFloatingActionButton(
               onClick = { showPlaylistActionSheet = true },
               icon = { Icon(Icons.Filled.Add, contentDescription = null) },
-              text = { Text("Create Playlist") },
+              text = { Text("إنشاء قائمة تشغيل") },
               modifier = Modifier.padding(bottom = navigationBarHeight)
             )
           }
@@ -262,8 +262,8 @@ object PlaylistScreen : Screen {
           ) {
             EmptyState(
               icon = Icons.Filled.Search,
-              title = "No playlists found",
-              message = "Try a different search term",
+              title = "لم يتم العثور على قوائم تشغيل",
+              message = "جرّب مصطلح بحث مختلف",
             )
           }
         } else if (playlistsWithCount.isEmpty() && hasCompletedInitialLoad) {
@@ -279,8 +279,8 @@ object PlaylistScreen : Screen {
             ) {
               EmptyState(
                 icon = Icons.AutoMirrored.Outlined.PlaylistAdd,
-                title = "No playlists yet",
-                message = "Create a playlist or add one from an m3u URL",
+                title = "لا توجد قوائم تشغيل بعد",
+                message = "أنشئ قائمة تشغيل أو أضف واحدة من عنوان URL لملف m3u",
               )
             }
           }
@@ -324,12 +324,12 @@ object PlaylistScreen : Screen {
           var playlistName by remember { mutableStateOf(selectedPlaylist.playlist.name) }
           androidx.compose.material3.AlertDialog(
             onDismissRequest = { showRenameDialog = false },
-            title = { Text("Rename Playlist") },
+            title = { Text("إعادة تسمية قائمة التشغيل") },
             text = {
               androidx.compose.material3.OutlinedTextField(
                 value = playlistName,
                 onValueChange = { playlistName = it },
-                label = { Text("Playlist Name") },
+                label = { Text("اسم قائمة التشغيل") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
               )
@@ -347,14 +347,14 @@ object PlaylistScreen : Screen {
                 },
                 enabled = playlistName.isNotBlank(),
               ) {
-                Text("Rename")
+                Text("إعادة تسمية")
               }
             },
             dismissButton = {
               androidx.compose.material3.TextButton(
                 onClick = { showRenameDialog = false },
               ) {
-                Text("Cancel")
+                Text("إلغاء")
               }
             },
           )

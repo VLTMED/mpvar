@@ -187,7 +187,7 @@ object RecentlyPlayedScreen : Screen {
     Scaffold(
         topBar = {
           BrowserTopBar(
-            title = "Recently Played",
+            title = "تم تشغيله مؤخرًا",
             isInSelectionMode = selectionManager.isInSelectionMode,
             selectedCount = selectionManager.selectedCount,
             totalCount = recentItems.size,
@@ -221,7 +221,7 @@ object RecentlyPlayedScreen : Screen {
                   TooltipAnchorPosition.Above
                 }
               ),
-              tooltip = { PlainTooltip { Text("Toggle menu") } },
+              tooltip = { PlainTooltip { Text("تبديل القائمة") } },
               state = rememberTooltipState(),
             ) {
               ToggleFloatingActionButton(
@@ -253,7 +253,7 @@ object RecentlyPlayedScreen : Screen {
               filePicker.launch(arrayOf("video/*"))
             },
             icon = { Icon(Icons.Filled.FileOpen, contentDescription = null) },
-            text = { Text(text = "Open File") },
+            text = { Text(text = "فتح ملف") },
           )
 
           FloatingActionButtonMenuItem(
@@ -268,7 +268,7 @@ object RecentlyPlayedScreen : Screen {
               }
             },
             icon = { Icon(Icons.Filled.History, contentDescription = null) },
-            text = { Text(text = "Recently Played") },
+            text = { Text(text = "تم تشغيله مؤخرًا") },
           )
 
           FloatingActionButtonMenuItem(
@@ -277,7 +277,7 @@ object RecentlyPlayedScreen : Screen {
               showLinkDialog.value = true
             },
             icon = { Icon(Icons.Filled.Link, contentDescription = null) },
-            text = { Text(text = "Open Link") },
+            text = { Text(text = "فتح رابط") },
           )
         }
       },
@@ -292,8 +292,8 @@ object RecentlyPlayedScreen : Screen {
           ) {
             EmptyState(
               icon = Icons.Filled.History,
-              title = "Recently Played is disabled",
-              message = "Enable it in Advanced Settings to track your playback history",
+              title = "تم تعطيل التشغيل الأخير",
+              message = "قم بتمكينه في الإعدادات المتقدمة لتتبع محفوظات التشغيل الخاصة بك",
             )
           }
         }
@@ -321,8 +321,8 @@ object RecentlyPlayedScreen : Screen {
           ) {
             EmptyState(
               icon = Icons.Filled.History,
-              title = "No recently played videos",
-              message = "Videos you play will appear here",
+              title = "لا توجد مقاطع فيديو تم تشغيلها مؤخرًا",
+              message = "مقاطع الفيديو التي تقوم بتشغيلها ستظهر هنا",
             )
           }
         }
@@ -353,22 +353,22 @@ object RecentlyPlayedScreen : Screen {
       if (deleteDialogOpen.value && selectionManager.isInSelectionMode) {
         // Remove selected items from history
         val itemCount = selectionManager.selectedCount
-        val itemText = if (itemCount == 1) "item" else "items"
+        val itemText = if (itemCount == 1) "عنصر" else "عناصر"
         val deleteFiles = deleteFilesCheckbox.value
 
         val title = if (deleteFiles) {
-          "Delete $itemCount $itemText?"
+          "حذف $itemCount $itemText?"
         } else {
-          "Remove $itemCount $itemText from history?"
+          "إزالة $itemCount $itemText من السجل؟"
         }
 
         val subtitle = buildString {
           if (deleteFiles) {
-            append("This will permanently delete the original video file(s) from your device storage.\n\n")
-            append("This action cannot be undone.")
+            append("سيؤدي هذا إلى حذف ملف (ملفات) الفيديو الأصلية نهائيًا من مساحة تخزين جهازك.\n\n")
+            append("لا يمكن التراجع عن هذا الإجراء.")
           } else {
-            append("This will remove the selected $itemText from your recently played list. ")
-            append("The original video files will not be deleted.")
+            append("سيؤدي هذا إلى إزالة $itemText المحددة من قائمة التشغيل الأخيرة. ")
+            append("لن يتم حذف ملفات الفيديو الأصلية.")
           }
         }
 
@@ -387,7 +387,7 @@ object RecentlyPlayedScreen : Screen {
                 },
               )
               androidx.compose.material3.Text(
-                text = "Also delete original file(s)",
+                text = "حذف الملف (الملفات) الأصلية أيضًا",
                 modifier = Modifier.padding(start = 8.dp),
                 style = MaterialTheme.typography.bodyMedium,
               )
