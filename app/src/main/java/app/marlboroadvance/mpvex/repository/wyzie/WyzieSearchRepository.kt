@@ -396,7 +396,12 @@ class WyzieSearchRepository(
                     var movieDir = parentDir.findFile(folderName) ?: parentDir.createDirectory(folderName)
                     if (movieDir != null) {
                         // Check for existing file or create new one
-                        val subFile = movieDir.findFile(subFileName) ?: movieDir.createFile("application/octet-stream", subFileName)
+                        val mimeType = when (extension) {
+                            "srt", "ass", "ssa", "vtt", "sub", "txt" -> "text/plain"
+                            else -> "text/plain"
+                        }
+                        val subFile = movieDir.findFile(subFileName)
+                            ?: movieDir.createFile(mimeType, subFileName)?.also { it.renameTo(subFileName) }
                         if (subFile != null) {
                             context.contentResolver.openOutputStream(subFile.uri)?.use { it.write(bytes) }
                             return@withContext Result.success(subFile.uri)
