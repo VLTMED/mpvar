@@ -100,7 +100,7 @@ fun PlayLinkSheet(
     ) {
       // Title
       Text(
-        text = "Play Link",
+        text = "تشغيل رابط",
         style = MaterialTheme.typography.headlineSmall,
         fontWeight = FontWeight.Medium,
         color = MaterialTheme.colorScheme.onSurface,
@@ -117,7 +117,7 @@ fun PlayLinkSheet(
             isLinkInputUrlValid = newValue.isBlank() || MediaUtils.isURLValid(newValue)
           },
           modifier = Modifier.fillMaxWidth(),
-          label = { Text("Enter URL") },
+          label = { Text("أدخل عنوان URL") },
           placeholder = { Text("https://example.com/video.mp4") },
           singleLine = true,
           isError = linkInputUrl.isNotBlank() && !isLinkInputUrlValid,
@@ -130,7 +130,7 @@ fun PlayLinkSheet(
 
         if (linkInputUrl.isNotBlank() && !isLinkInputUrlValid) {
           Text(
-            text = "Invalid URL protocol",
+            text = "بروتوكول عنوان URL غير صالح",
             color = MaterialTheme.colorScheme.error,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Medium,
@@ -145,7 +145,7 @@ fun PlayLinkSheet(
       ) {
         TextButton(onClick = handleDismiss) {
           Text(
-            text = "Cancel",
+            text = "إلغاء",
             fontWeight = FontWeight.Medium,
           )
         }
@@ -159,7 +159,7 @@ fun PlayLinkSheet(
             ),
         ) {
           Text(
-            text = "Play",
+            text = "تشغيل",
             fontWeight = FontWeight.SemiBold,
           )
         }
@@ -175,13 +175,13 @@ private fun ValidationIcon(isValid: Boolean) {
   if (isValid) {
     Icon(
       Icons.Filled.CheckCircle,
-      contentDescription = "Valid URL",
+      contentDescription = "عنوان URL صالح",
       tint = MaterialTheme.colorScheme.primary,
     )
   } else {
     Icon(
       Icons.Filled.Info,
-      contentDescription = "Invalid URL",
+      contentDescription = "عنوان URL غير صالح",
       tint = MaterialTheme.colorScheme.error,
     )
   }

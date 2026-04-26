@@ -187,26 +187,26 @@ object MainScreen : Screen {
               )
           ) {
             NavigationBarItem(
-              icon = { Icon(Icons.Filled.Home, contentDescription = "Home") },
-              label = { Text("Home") },
+              icon = { Icon(Icons.Filled.Home, contentDescription = "الرئيسية") },
+              label = { Text("الرئيسية") },
               selected = selectedTab == 0,
               onClick = { selectedTab = 0 }
             )
             NavigationBarItem(
-              icon = { Icon(Icons.Filled.History, contentDescription = "Recents") },
-              label = { Text("Recents") },
+              icon = { Icon(Icons.Filled.History, contentDescription = "الأخيرة") },
+              label = { Text("الأخيرة") },
               selected = selectedTab == 1,
               onClick = { selectedTab = 1 }
             )
             NavigationBarItem(
-              icon = { Icon(Icons.AutoMirrored.Filled.PlaylistPlay, contentDescription = "Playlists") },
-              label = { Text("Playlists") },
+              icon = { Icon(Icons.AutoMirrored.Filled.PlaylistPlay, contentDescription = "قوائم التشغيل") },
+              label = { Text("قوائم التشغيل") },
               selected = selectedTab == 2,
               onClick = { selectedTab = 2 }
             )
             NavigationBarItem(
-              icon = { Icon(Icons.Filled.Language, contentDescription = "Network") },
-              label = { Text("Network") },
+              icon = { Icon(Icons.Filled.Language, contentDescription = "الشبكة") },
+              label = { Text("الشبكة") },
               selected = selectedTab == 3,
               onClick = { selectedTab = 3 }
             )
