@@ -486,7 +486,7 @@ class WyzieSearchRepository(
     private fun tmdbDirectSearch(query: String, apiKey: String): List<WyzieTmdbResult> {
         val url = "https://api.themoviedb.org/3/search/multi" +
             "?query=${URLEncoder.encode(query, "UTF-8")}" +
-            "&include_adult=false&language=en-US&page=1"
+            "&include_adult=false&language=ar&include_image_language=ar,en,null&page=1"
         val request = Request.Builder()
             .url(url)
             .header("Authorization", "Bearer $apiKey")

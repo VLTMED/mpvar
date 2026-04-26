@@ -135,6 +135,7 @@ fun OnlineSubtitleSearchSheet(
           value = searchQuery,
           onValueChange = { 
             searchQuery = it
+            if (it.length >= 2) onSearchMedia(it)
           },
           modifier = Modifier
             .fillMaxWidth()
