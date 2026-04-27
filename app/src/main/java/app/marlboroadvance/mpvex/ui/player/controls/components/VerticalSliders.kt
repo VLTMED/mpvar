@@ -1,18 +1,17 @@
 package app.marlboroadvance.mpvex.ui.player.controls.components
 
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.VolumeDown
@@ -31,7 +30,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.marlboroadvance.mpvex.R
@@ -55,28 +57,29 @@ fun VerticalSlider(
   modifier: Modifier = Modifier,
   overflowValue: Float? = null,
   overflowRange: ClosedFloatingPointRange<Float>? = null,
+  colorStart: Color = MaterialTheme.colorScheme.primaryContainer,
+  colorEnd: Color = MaterialTheme.colorScheme.primary,
 ) {
   val coercedValue = value.coerceIn(range)
   Box(
-    modifier =
-      modifier
-        .height(120.dp)
-        .aspectRatio(0.2f)
-        .clip(RoundedCornerShape(16.dp))
-        .background(MaterialTheme.colorScheme.background)
-        .border(
-          width = 1.dp,
-          color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f),
-          shape = RoundedCornerShape(16.dp),
-        ),
+    modifier = modifier
+      .height(130.dp)
+      .width(36.dp)
+      .clip(RoundedCornerShape(18.dp))
+      .background(Color.Black.copy(alpha = 0.3f)),
     contentAlignment = Alignment.BottomCenter,
   ) {
-    val targetHeight by animateFloatAsState(percentage(coercedValue, range), label = "vsliderheight")
+    val targetHeight by animateFloatAsState(
+      percentage(coercedValue, range),
+      animationSpec = spring(dampingRatio = 0.75f, stiffness = 300f),
+      label = "vsliderheight",
+    )
     Box(
       Modifier
         .fillMaxWidth()
-        .fillMaxHeight(targetHeight)
-        .background(MaterialTheme.colorScheme.tertiary),
+        .fillMaxHeight(targetHeight.coerceAtLeast(0.05f))
+        .clip(RoundedCornerShape(18.dp))
+        .background(Brush.verticalGradient(listOf(colorStart, colorEnd))),
     )
     if (overflowRange != null && overflowValue != null) {
       val overflowHeight by animateFloatAsState(
@@ -87,6 +90,7 @@ fun VerticalSlider(
         Modifier
           .fillMaxWidth()
           .fillMaxHeight(overflowHeight)
+          .clip(RoundedCornerShape(18.dp))
           .background(MaterialTheme.colorScheme.errorContainer),
       )
     }
@@ -100,28 +104,29 @@ fun VerticalSlider(
   modifier: Modifier = Modifier,
   overflowValue: Int? = null,
   overflowRange: ClosedRange<Int>? = null,
+  colorStart: Color = MaterialTheme.colorScheme.primaryContainer,
+  colorEnd: Color = MaterialTheme.colorScheme.primary,
 ) {
   val coercedValue = value.coerceIn(range)
   Box(
-    modifier =
-      modifier
-        .height(120.dp)
-        .aspectRatio(0.2f)
-        .clip(RoundedCornerShape(16.dp))
-        .background(MaterialTheme.colorScheme.background)
-        .border(
-          width = 1.dp,
-          color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f),
-          shape = RoundedCornerShape(16.dp),
-        ),
+    modifier = modifier
+      .height(130.dp)
+      .width(36.dp)
+      .clip(RoundedCornerShape(18.dp))
+      .background(Color.Black.copy(alpha = 0.3f)),
     contentAlignment = Alignment.BottomCenter,
   ) {
-    val targetHeight by animateFloatAsState(percentage(coercedValue, range), label = "vsliderheight")
+    val targetHeight by animateFloatAsState(
+      percentage(coercedValue, range),
+      animationSpec = spring(dampingRatio = 0.75f, stiffness = 300f),
+      label = "vsliderheight",
+    )
     Box(
       Modifier
         .fillMaxWidth()
-        .fillMaxHeight(targetHeight)
-        .background(MaterialTheme.colorScheme.tertiary),
+        .fillMaxHeight(targetHeight.coerceAtLeast(0.05f))
+        .clip(RoundedCornerShape(18.dp))
+        .background(Brush.verticalGradient(listOf(colorStart, colorEnd))),
     )
     if (overflowRange != null && overflowValue != null) {
       val overflowHeight by animateFloatAsState(
@@ -132,6 +137,7 @@ fun VerticalSlider(
         Modifier
           .fillMaxWidth()
           .fillMaxHeight(overflowHeight)
+          .clip(RoundedCornerShape(18.dp))
           .background(MaterialTheme.colorScheme.errorContainer),
       )
     }
@@ -147,25 +153,27 @@ fun BrightnessSlider(
   val coercedBrightness = brightness.coerceIn(range)
   Surface(
     modifier = modifier,
-    shape = RoundedCornerShape(20.dp),
-    color = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.55f),
-    contentColor = MaterialTheme.colorScheme.onSurface,
-    tonalElevation = 0.dp,
-    shadowElevation = 0.dp,
-    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)),
+    shape = RoundedCornerShape(24.dp),
+    color = Color.Black.copy(alpha = 0.5f),
+    contentColor = Color.White,
   ) {
     Column(
-      modifier = Modifier.padding(horizontal = 12.dp, vertical = 16.dp),
+      modifier = Modifier.padding(horizontal = 14.dp, vertical = 20.dp),
       horizontalAlignment = Alignment.CenterHorizontally,
-      verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.smaller),
+      verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
     ) {
       Text(
-        (coercedBrightness * 100).toInt().toString(),
-        style = MaterialTheme.typography.bodySmall,
+        "${(coercedBrightness * 100).toInt()}%",
+        style = MaterialTheme.typography.titleSmall,
+        fontWeight = FontWeight.Bold,
+        textAlign = TextAlign.Center,
+        modifier = Modifier.widthIn(min = 48.dp),
       )
       VerticalSlider(
         coercedBrightness,
         range,
+        colorStart = MaterialTheme.colorScheme.primaryContainer,
+        colorEnd = MaterialTheme.colorScheme.primary,
       )
       Icon(
         when (percentage(coercedBrightness, range)) {
@@ -192,29 +200,30 @@ fun VolumeSlider(
   val percentage = (percentage(volume, range) * 100).roundToInt()
   Surface(
     modifier = modifier,
-    shape = RoundedCornerShape(20.dp),
-    color = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.55f),
-    contentColor = MaterialTheme.colorScheme.onSurface,
-    tonalElevation = 0.dp,
-    shadowElevation = 0.dp,
-    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)),
+    shape = RoundedCornerShape(24.dp),
+    color = Color.Black.copy(alpha = 0.5f),
+    contentColor = Color.White,
   ) {
     Column(
-      modifier = Modifier.padding(horizontal = 12.dp, vertical = 16.dp),
+      modifier = Modifier.padding(horizontal = 14.dp, vertical = 20.dp),
       horizontalAlignment = Alignment.CenterHorizontally,
-      verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.smaller),
+      verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
     ) {
       val boostVolume = mpvVolume - 100
       Text(
         getVolumeSliderText(volume, mpvVolume, boostVolume, percentage, displayAsPercentage),
-        style = MaterialTheme.typography.bodySmall,
+        style = MaterialTheme.typography.titleSmall,
+        fontWeight = FontWeight.Bold,
         textAlign = TextAlign.Center,
+        modifier = Modifier.widthIn(min = 48.dp),
       )
       VerticalSlider(
         if (displayAsPercentage) percentage else volume,
         if (displayAsPercentage) 0..100 else range,
         overflowValue = boostVolume,
         overflowRange = boostRange,
+        colorStart = MaterialTheme.colorScheme.primaryContainer,
+        colorEnd = MaterialTheme.colorScheme.primary,
       )
       Icon(
         when (percentage) {
