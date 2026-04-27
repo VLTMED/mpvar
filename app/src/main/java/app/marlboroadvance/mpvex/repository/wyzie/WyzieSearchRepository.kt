@@ -225,7 +225,7 @@ class WyzieSearchRepository(
     private val baseUrl = "https://sub.wyzie.io"
 
     private fun sanitizeFileName(name: String): String =
-        name.replace(Regex("[/\\:*?"<>|]"), "_").trim()
+        name.replace(Regex("[/\\:*?\"<>|]"), "_").trim()
 
     suspend fun search(
         query: String,
