@@ -414,7 +414,7 @@ class WyzieSearchRepository(
                         // Check for existing file or create new one
                         val mimeType = "application/octet-stream"
                         val subFile = movieDir.findFile(subFileName)
-                            ?: movieDir.createFile(mimeType, subFileName)
+                            ?: movieDir.createFile("application/octet-stream", subFileName)
                         if (subFile != null) {
                             context.contentResolver.openOutputStream(subFile.uri)?.use { it.write(bytes) }
                             return@withContext Result.success(subFile.uri)
