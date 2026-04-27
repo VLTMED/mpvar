@@ -84,6 +84,7 @@ jobs:
           declare -a apks=("universal" "arm64-v8a" "armeabi-v7a" "x86" "x86_64")
           mkdir -p output
           mkdir -p output-universal
+          mkdir -p output-arm64-v8a
           declare -a file_sizes=()
           
           for arch in "${apks[@]}"; do
@@ -100,6 +101,10 @@ jobs:
           cp "output/mpvEx-preview-r${commit_count}-universal.apk" \
              "output-universal/mpvEx-preview-r${commit_count}-universal.apk"
 
+          # Copy arm64-v8a APK separately for the standalone artifact
+          cp "output/mpvEx-preview-r${commit_count}-arm64-v8a.apk" \
+             "output-arm64-v8a/mpvEx-preview-r${commit_count}-arm64-v8a.apk"
+
       - name: Upload all artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -111,6 +116,12 @@ jobs:
         with:
           name: preview-universal
           path: output-universal/
+
+      - name: Upload arm64-v8a artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-arm64-v8a
+          path: output-arm64-v8a/
 
   publish:
     needs: build
