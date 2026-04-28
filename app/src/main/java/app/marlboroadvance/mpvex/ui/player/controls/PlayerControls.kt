@@ -908,13 +908,13 @@ fun PlayerControls(
         ) {
           val invertDuration by playerPreferences.invertDuration.collectAsState()
           val seekbarStyle by appearancePreferences.seekbarStyle.collectAsState()
-          val readAhead by MPVLib.propFloat["demuxer-cache-time"].collectAsState()
+
           var wasPlayerAlreadyPaused by remember { mutableStateOf(false) }
 
           SeekbarWithTimers(
             position = precisePosition,
             duration = if (preciseDuration > 0) preciseDuration else duration?.toFloat() ?: 0f,
-            readAheadValue = readAhead ?: 0f,
+
             onValueChange = {
               if (!isSeeking) {
                 // First drag frame - pause playback
