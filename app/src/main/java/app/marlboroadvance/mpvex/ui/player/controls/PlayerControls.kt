@@ -167,7 +167,6 @@ fun PlayerControls(
   val areControlsLocked by viewModel.areControlsLocked.collectAsState()
   val seekBarShown by viewModel.seekBarShown.collectAsState()
   val pausedForCache by MPVLib.propBoolean["paused-for-cache"].collectAsState()
-    val seeking by MPVLib.propBoolean["seeking"].collectAsState()
   val paused by MPVLib.propBoolean["pause"].collectAsState()
   val duration by MPVLib.propInt["duration"].collectAsState()
   val position by MPVLib.propInt["time-pos"].collectAsState()
@@ -613,7 +612,7 @@ fun PlayerControls(
 
 
         val showLoadingCircle by playerPreferences.showLoadingCircle.collectAsState()
-        val isLoading = (pausedForCache == true || seeking == true) && showLoadingCircle
+        val isLoading = pausedForCache == true && showLoadingCircle
 
         AnimatedVisibility(
             visible = isLoading && !areControlsLocked,
