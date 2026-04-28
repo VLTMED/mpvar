@@ -26,12 +26,14 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.marlboroadvance.mpvex.repository.wyzie.WyzieEpisode
@@ -63,15 +65,6 @@ private val MaterialTheme.subAccentBorder
     @Composable get() = colorScheme.primary.copy(alpha = 0.38f)
 
 // ── Main sheet ────────────────────────────────────────────────────────────────
-//
-// IMPORTANT — RTL strategy
-// ────────────────────────
-// We do NOT force LayoutDirection.Rtl anywhere inside this file. The
-// surrounding `GenericTracksSheet` (and ultimately the Activity) already
-// owns the layout direction. We arrange children in a *logical* LTR order
-// inside Rows; Compose mirrors them automatically when the inherited
-// direction is RTL. Forcing it here causes a double-flip and is the root
-// cause of the bug observed in the previous revision.
 @Composable
 fun OnlineSubtitleSearchSheet(
     onDismissRequest: () -> Unit,
@@ -100,6 +93,8 @@ fun OnlineSubtitleSearchSheet(
     val keyboardController = LocalSoftwareKeyboardController.current
     val mediaInfo = remember(mediaTitle) { MediaInfoParser.parse(mediaTitle) }
     var searchQuery by remember { mutableStateOf(mediaInfo.title) }
+    // Hold the selected TMDB result so we can display its poster/overview in TvPanel
+    var selectedMedia by remember { mutableStateOf<WyzieTmdbResult?>(null) }
 
     // Auto-trigger once when title changes (NOT on every recomposition of mediaInfo)
     LaunchedEffect(mediaInfo.title) {
@@ -115,127 +110,141 @@ fun OnlineSubtitleSearchSheet(
     val showLoading     = isSearching || isFetchingTvDetails
     val showResults     = searchResults.isNotEmpty()
 
-    GenericTracksSheet(
-        tracks = items,
-        onDismissRequest = onDismissRequest,
-        modifier = modifier,
-        header = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = MaterialTheme.spacing.medium)
-            ) {
-
-                // ── Search bar ───────────────────────────────────────────
-                SubSearchField(
-                    query        = searchQuery,
-                    onQueryChange = { v ->
-                        searchQuery = v
-                        if (v.length >= 2) onSearchMedia(v)
-                        if (v.isEmpty()) onClearMediaSelection()
-                    },
-                    onSearch = {
-                        onSearchMedia(searchQuery)
-                        keyboardController?.hide()
-                    },
-                    onClear = {
-                        searchQuery = ""
-                        onClearMediaSelection()
-                    },
-                    isBusy   = isSearchingMedia || isSearching || isDownloading,
+    // ── RTL guard ──────────────────────────────────────────────────────────
+    // Force RTL for the entire sheet so every Row/Column aligns correctly
+    // regardless of the parent's layout direction.  If the parent is already
+    // RTL this is a no-op (same value override does NOT double-flip).
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+        GenericTracksSheet(
+            tracks = items,
+            onDismissRequest = onDismissRequest,
+            modifier = modifier,
+            header = {
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = MaterialTheme.spacing.medium)
-                        .padding(bottom = 6.dp)
-                )
-
-                // ── Autocomplete ─────────────────────────────────────────
-                AnimatedVisibility(
-                    visible = showSuggestions,
-                    enter   = expandVertically() + fadeIn(),
-                    exit    = shrinkVertically() + fadeOut()
+                        .padding(top = MaterialTheme.spacing.medium)
                 ) {
-                    SuggestionList(
-                        results  = mediaSearchResults,
-                        onSelect = { result ->
-                            searchQuery = result.title
-                            onSelectMedia(result)
+
+                    // ── Search bar ───────────────────────────────────────
+                    SubSearchField(
+                        query        = searchQuery,
+                        onQueryChange = { v ->
+                            searchQuery = v
+                            if (v.length >= 2) onSearchMedia(v)
+                            if (v.isEmpty()) {
+                                selectedMedia = null
+                                onClearMediaSelection()
+                            }
+                        },
+                        onSearch = {
+                            onSearchMedia(searchQuery)
                             keyboardController?.hide()
                         },
+                        onClear = {
+                            searchQuery = ""
+                            selectedMedia = null
+                            onClearMediaSelection()
+                        },
+                        isBusy   = isSearchingMedia || isSearching || isDownloading,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = MaterialTheme.spacing.medium)
                             .padding(bottom = 6.dp)
                     )
-                }
 
-                // ── TV panel ─────────────────────────────────────────────
-                AnimatedVisibility(
-                    visible = showTvPanel,
-                    enter   = expandVertically() + fadeIn(),
-                    exit    = shrinkVertically() + fadeOut()
-                ) {
-                    if (selectedTvShow != null) {
-                        TvPanel(
-                            tvShow          = selectedTvShow,
-                            isLoadingDetail = isFetchingTvDetails,
-                            selectedSeason  = selectedSeason,
-                            onSelectSeason  = onSelectSeason,
-                            isLoadingEp     = isFetchingEpisodes,
-                            episodes        = seasonEpisodes,
-                            selectedEpisode = selectedEpisode,
-                            onSelectEpisode = onSelectEpisode,
-                            onBack          = onClearMediaSelection,
-                            modifier        = Modifier
+                    // ── Autocomplete ─────────────────────────────────────
+                    AnimatedVisibility(
+                        visible = showSuggestions,
+                        enter   = expandVertically() + fadeIn(),
+                        exit    = shrinkVertically() + fadeOut()
+                    ) {
+                        SuggestionList(
+                            results  = mediaSearchResults,
+                            onSelect = { result ->
+                                searchQuery = result.title
+                                selectedMedia = result
+                                onSelectMedia(result)
+                                keyboardController?.hide()
+                            },
+                            modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = MaterialTheme.spacing.medium)
                                 .padding(bottom = 6.dp)
                         )
                     }
-                }
 
-                // ── Progress ─────────────────────────────────────────────
-                if (showLoading) {
-                    LinearProgressIndicator(
+                    // ── TV panel ─────────────────────────────────────────
+                    AnimatedVisibility(
+                        visible = showTvPanel,
+                        enter   = expandVertically() + fadeIn(),
+                        exit    = shrinkVertically() + fadeOut()
+                    ) {
+                        if (selectedTvShow != null) {
+                            TvPanel(
+                                tvShow          = selectedTvShow,
+                                posterUrl       = selectedMedia?.poster,
+                                year            = selectedMedia?.releaseYear,
+                                overview        = selectedMedia?.overview,
+                                isLoadingDetail = isFetchingTvDetails,
+                                selectedSeason  = selectedSeason,
+                                onSelectSeason  = onSelectSeason,
+                                isLoadingEp     = isFetchingEpisodes,
+                                episodes        = seasonEpisodes,
+                                selectedEpisode = selectedEpisode,
+                                onSelectEpisode = onSelectEpisode,
+                                onBack          = onClearMediaSelection,
+                                modifier        = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = MaterialTheme.spacing.medium)
+                                    .padding(bottom = 6.dp)
+                            )
+                        }
+                    }
+
+                    // ── Progress ─────────────────────────────────────────
+                    if (showLoading) {
+                        LinearProgressIndicator(
+                            modifier   = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = MaterialTheme.spacing.medium)
+                                .height(2.dp),
+                            color      = MaterialTheme.subAccent,
+                            trackColor = MaterialTheme.subAccent.copy(alpha = 0.12f)
+                        )
+                    }
+
+                    // ── Results header ───────────────────────────────────
+                    if (showResults) {
+                        val ctx = when {
+                            selectedTvShow != null && selectedSeason != null && selectedEpisode != null ->
+                                "${selectedTvShow.name} \u00b7 S${selectedSeason.season_number} E${selectedEpisode.episode_number}"
+                            else -> searchQuery
+                        }
+                        ResultsHeader(
+                            count    = searchResults.size,
+                            context  = ctx,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = MaterialTheme.spacing.medium)
+                                .padding(top = 8.dp, bottom = 4.dp)
+                        )
+                    }
+                }
+            },
+            track = { item ->
+                if (item is OnlineSubtitleItem.OnlineTrack) {
+                    SubCard(
+                        subtitle   = item.subtitle,
+                        onDownload = { onDownloadOnline(item.subtitle) },
                         modifier   = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = MaterialTheme.spacing.medium)
-                            .height(2.dp),
-                        color      = MaterialTheme.subAccent,
-                        trackColor = MaterialTheme.subAccent.copy(alpha = 0.12f)
-                    )
-                }
-
-                // ── Results header ───────────────────────────────────────
-                if (showResults) {
-                    val ctx = when {
-                        selectedTvShow != null && selectedSeason != null && selectedEpisode != null ->
-                            "${selectedTvShow.name} · S${selectedSeason.season_number} E${selectedEpisode.episode_number}"
-                        else -> searchQuery
-                    }
-                    ResultsHeader(
-                        count    = searchResults.size,
-                        context  = ctx,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = MaterialTheme.spacing.medium)
-                            .padding(top = 8.dp, bottom = 4.dp)
+                            .padding(horizontal = MaterialTheme.spacing.medium, vertical = 3.dp)
                     )
                 }
             }
-        },
-        track = { item ->
-            if (item is OnlineSubtitleItem.OnlineTrack) {
-                SubCard(
-                    subtitle   = item.subtitle,
-                    onDownload = { onDownloadOnline(item.subtitle) },
-                    modifier   = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = MaterialTheme.spacing.medium, vertical = 3.dp)
-                )
-            }
-        }
-    )
+        )
+    }
 }
 
 // ── Search bar ────────────────────────────────────────────────────────────────
@@ -252,10 +261,8 @@ private fun SubSearchField(
     var focused by remember { mutableStateOf(false) }
     val border  = if (focused) MaterialTheme.subAccent else colors.outlineVariant.copy(alpha = 0.5f)
 
-    // Visual order (left→right): [clear/spinner] [input...........] [🔍]
-    // In RTL this becomes:       [🔍] [...........input] [clear/spinner]
-    // We achieve this by placing items in that LTR order inside a plain Row —
-    // the sheet's RTL context will mirror it correctly.
+    // RTL layout: Row starts from the right, so placing Search first puts it
+    // on the right (Start), TextField in the middle, and Clear last on the left (End).
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(14.dp))
@@ -265,7 +272,53 @@ private fun SubSearchField(
         verticalAlignment     = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // ① Trailing icon (clear / spinner) — leftmost slot in LTR layout
+        // ① Search icon — first in code = rightmost (Start) in RTL
+        Icon(
+            Icons.Default.Search,
+            contentDescription = "بحث",
+            tint     = colors.onSurfaceVariant.copy(alpha = 0.45f),
+            modifier = Modifier.size(18.dp)
+        )
+
+        // ② Text input — fills remaining space
+        androidx.compose.foundation.text.BasicTextField(
+            value          = query,
+            onValueChange  = onQueryChange,
+            modifier       = Modifier
+                .weight(1f)
+                .onFocusChanged { focused = it.isFocused },
+            textStyle = remember(colors.onSurface) {
+                TextStyle(
+                    color     = colors.onSurface,
+                    fontSize  = 14.sp,
+                    textAlign = TextAlign.Right
+                )
+            },
+            singleLine      = true,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+            keyboardActions = KeyboardActions(onSearch = { onSearch() }),
+            cursorBrush     = androidx.compose.ui.graphics.SolidColor(MaterialTheme.subAccent),
+            decorationBox   = { inner ->
+                Box(
+                    modifier         = Modifier.fillMaxWidth(),
+                    // Start = Right edge in RTL
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    if (query.isEmpty()) {
+                        Text(
+                            text      = "ابحث عن فيلم أو مسلسل...",
+                            fontSize  = 14.sp,
+                            color     = colors.onSurfaceVariant.copy(alpha = 0.4f),
+                            textAlign = TextAlign.Right,
+                            modifier  = Modifier.fillMaxWidth()
+                        )
+                    }
+                    inner()
+                }
+            }
+        )
+
+        // ③ Trailing icon (clear / spinner) — last in code = leftmost (End) in RTL
         Box(Modifier.size(18.dp), contentAlignment = Alignment.Center) {
             when {
                 isBusy -> CircularProgressIndicator(
@@ -283,49 +336,6 @@ private fun SubSearchField(
                 )
             }
         }
-
-        // ② Text input — fills remaining space
-        androidx.compose.foundation.text.BasicTextField(
-            value          = query,
-            onValueChange  = onQueryChange,
-            modifier       = Modifier
-                .weight(1f)
-                .onFocusChanged { focused = it.isFocused },
-            textStyle = TextStyle(
-                color     = colors.onSurface,
-                fontSize  = 14.sp,
-                textAlign = TextAlign.Right
-            ),
-            singleLine      = true,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-            keyboardActions = KeyboardActions(onSearch = { onSearch() }),
-            cursorBrush     = androidx.compose.ui.graphics.SolidColor(MaterialTheme.subAccent),
-            decorationBox   = { inner ->
-                Box(
-                    modifier         = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.CenterEnd
-                ) {
-                    if (query.isEmpty()) {
-                        Text(
-                            text      = "ابحث عن فيلم أو مسلسل...",
-                            fontSize  = 14.sp,
-                            color     = colors.onSurfaceVariant.copy(alpha = 0.4f),
-                            textAlign = TextAlign.Right,
-                            modifier  = Modifier.fillMaxWidth()
-                        )
-                    }
-                    inner()
-                }
-            }
-        )
-
-        // ③ Leading icon (search) — rightmost slot in LTR layout
-        Icon(
-            Icons.Default.Search,
-            contentDescription = "بحث",
-            tint     = colors.onSurfaceVariant.copy(alpha = 0.45f),
-            modifier = Modifier.size(18.dp)
-        )
     }
 }
 
@@ -364,8 +374,7 @@ private fun SuggestionRow(result: WyzieTmdbResult, onClick: () -> Unit) {
     val isTV   = result.mediaType == "tv"
     val colors = MaterialTheme.colorScheme
 
-    // LTR layout order: [info(flex)] [poster] [chevron]
-    // In RTL sheet → chevron|poster|info — exactly matching the prototype
+    // RTL visual order: [chevron(End/Left)] [poster] [info(Start/Right)]
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -374,10 +383,38 @@ private fun SuggestionRow(result: WyzieTmdbResult, onClick: () -> Unit) {
         verticalAlignment     = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        // Info
+        // Chevron — points right (forward) for RTL interfaces
+        Icon(
+            Icons.Default.ChevronRight, null,
+            tint     = colors.onSurfaceVariant.copy(alpha = 0.3f),
+            modifier = Modifier.size(14.dp)
+        )
+
+        // Poster
+        Box(
+            modifier = Modifier
+                .size(width = 32.dp, height = 48.dp)
+                .clip(RoundedCornerShape(6.dp))
+                .background(colors.surfaceVariant)
+                .border(0.5.dp, colors.outlineVariant.copy(alpha = 0.4f), RoundedCornerShape(6.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+            if (result.poster != null) {
+                AsyncImage(
+                    model              = result.poster,
+                    contentDescription = result.title,
+                    contentScale       = ContentScale.Crop,
+                    modifier           = Modifier.fillMaxSize()
+                )
+            } else {
+                Icon(Icons.Default.Movie, null, tint = colors.outlineVariant, modifier = Modifier.size(14.dp))
+            }
+        }
+
+        // Info — align to Start (which is the RIGHT side in RTL)
         Column(
             modifier            = Modifier.weight(1f),
-            horizontalAlignment = Alignment.End,
+            horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.spacedBy(3.dp)
         ) {
             Text(
@@ -427,34 +464,6 @@ private fun SuggestionRow(result: WyzieTmdbResult, onClick: () -> Unit) {
                 )
             }
         }
-
-        // Poster
-        Box(
-            modifier = Modifier
-                .size(width = 32.dp, height = 48.dp)
-                .clip(RoundedCornerShape(6.dp))
-                .background(colors.surfaceVariant)
-                .border(0.5.dp, colors.outlineVariant.copy(alpha = 0.4f), RoundedCornerShape(6.dp)),
-            contentAlignment = Alignment.Center
-        ) {
-            if (result.poster != null) {
-                AsyncImage(
-                    model              = result.poster,
-                    contentDescription = result.title,
-                    contentScale       = ContentScale.Crop,
-                    modifier           = Modifier.fillMaxSize()
-                )
-            } else {
-                Icon(Icons.Default.Movie, null, tint = colors.outlineVariant, modifier = Modifier.size(14.dp))
-            }
-        }
-
-        // Chevron
-        Icon(
-            Icons.Default.ChevronLeft, null,
-            tint     = colors.onSurfaceVariant.copy(alpha = 0.3f),
-            modifier = Modifier.size(14.dp)
-        )
     }
 }
 
@@ -462,6 +471,9 @@ private fun SuggestionRow(result: WyzieTmdbResult, onClick: () -> Unit) {
 @Composable
 private fun TvPanel(
     tvShow:          WyzieTvShowDetails,
+    posterUrl:       String?,
+    year:            String?,
+    overview:        String?,
     isLoadingDetail: Boolean,
     selectedSeason:  WyzieSeason?,
     onSelectSeason:  (WyzieSeason) -> Unit,
@@ -480,7 +492,7 @@ private fun TvPanel(
         border   = androidx.compose.foundation.BorderStroke(0.5.dp, colors.outlineVariant.copy(alpha = 0.45f))
     ) {
         Column {
-            // Title row, LTR order: [title(flex)] [close btn]
+            // Title row with close button
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -511,6 +523,72 @@ private fun TvPanel(
                 }
             }
 
+            // ── Poster + meta row ──────────────────────────────────────────
+            if (!isLoadingDetail) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    verticalAlignment     = Alignment.Top,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    // Poster
+                    Box(
+                        modifier = Modifier
+                            .size(width = 48.dp, height = 72.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(colors.surfaceVariant)
+                            .border(0.5.dp, colors.outlineVariant.copy(alpha = 0.4f), RoundedCornerShape(8.dp)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (posterUrl != null) {
+                            AsyncImage(
+                                model              = posterUrl,
+                                contentDescription = tvShow.name,
+                                contentScale       = ContentScale.Crop,
+                                modifier           = Modifier.fillMaxSize()
+                            )
+                        } else {
+                            Icon(Icons.Default.Movie, null, tint = colors.outlineVariant, modifier = Modifier.size(20.dp))
+                        }
+                    }
+
+                    // Meta text (name / year / overview)
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(
+                            text       = tvShow.name,
+                            style      = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Medium,
+                            color      = colors.onSurface,
+                            maxLines   = 1,
+                            overflow   = TextOverflow.Ellipsis,
+                            textAlign  = TextAlign.Right
+                        )
+                        if (year != null) {
+                            Text(
+                                text       = year,
+                                style      = MaterialTheme.typography.labelSmall,
+                                color      = colors.onSurfaceVariant.copy(alpha = 0.7f)
+                            )
+                        }
+                        if (!overview.isNullOrBlank()) {
+                            Text(
+                                text       = overview,
+                                style      = MaterialTheme.typography.bodySmall,
+                                color      = colors.onSurfaceVariant.copy(alpha = 0.7f),
+                                maxLines   = 2,
+                                overflow   = TextOverflow.Ellipsis,
+                                lineHeight = 16.sp,
+                                textAlign  = TextAlign.Right
+                            )
+                        }
+                    }
+                }
+            }
+
             HorizontalDivider(color = colors.outlineVariant.copy(alpha = 0.35f), thickness = 0.5.dp)
 
             if (isLoadingDetail) {
@@ -520,7 +598,7 @@ private fun TvPanel(
                     trackColor = MaterialTheme.subAccent.copy(alpha = 0.1f)
                 )
             } else {
-                // Controls row, LTR order: [hint(flex)] [ep pill] [season pill]
+                // Controls row: hint | episode pill | season pill
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -531,7 +609,7 @@ private fun TvPanel(
                     val hintText = when {
                         selectedSeason == null  -> "اختر الموسم أولاً"
                         selectedEpisode == null -> "اختر الحلقة الآن"
-                        else -> "S${selectedSeason.season_number} · Ep ${selectedEpisode.episode_number}"
+                        else -> "S${selectedSeason.season_number} \u00b7 Ep ${selectedEpisode.episode_number}"
                     }
                     Text(
                         text       = hintText,
@@ -555,7 +633,7 @@ private fun TvPanel(
                         episodes.forEachIndexed { i, ep ->
                             DropdownMenuItem(
                                 text = {
-                                    Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
+                                    Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start) {
                                         Text("Ep ${ep.episode_number}", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyMedium)
                                         ep.name?.let {
                                             Text(
@@ -588,7 +666,7 @@ private fun TvPanel(
                         tvShow.seasons.forEachIndexed { i, s ->
                             DropdownMenuItem(
                                 text = {
-                                    Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
+                                    Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start) {
                                         Text("S${s.season_number}", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyMedium)
                                         Text("الموسم ${s.season_number}", style = MaterialTheme.typography.bodySmall, color = colors.onSurfaceVariant)
                                     }
@@ -641,7 +719,8 @@ private fun PillDropdown(
                 modifier = Modifier.size(13.dp).rotate(arrowDeg)
             )
             if (loading) CircularProgressIndicator(modifier = Modifier.size(11.dp), strokeWidth = 1.4.dp, color = MaterialTheme.subAccent)
-            Column(horizontalAlignment = Alignment.End) {
+            // Start = Right edge in RTL
+            Column(horizontalAlignment = Alignment.Start) {
                 Text(mainLabel, fontSize = 12.sp, fontWeight = FontWeight.Medium, color = if (enabled) colors.onSurface else colors.onSurface.copy(0.35f), lineHeight = 14.sp)
                 Text(subLabel,  fontSize = 9.sp,  color = if (enabled) colors.onSurfaceVariant.copy(0.55f) else colors.onSurface.copy(0.2f), lineHeight = 11.sp)
             }
@@ -667,6 +746,13 @@ private fun ResultsHeader(count: Int, context: String, modifier: Modifier = Modi
         verticalAlignment     = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
+        // "نتائج الترجمة" placed first → sits on the right (Start) in RTL
+        Text(
+            text       = "نتائج الترجمة",
+            style      = MaterialTheme.typography.labelSmall,
+            fontWeight = FontWeight.Medium,
+            color      = colors.onSurfaceVariant.copy(alpha = 0.65f)
+        )
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             Text(
                 text  = "$count",
@@ -686,12 +772,6 @@ private fun ResultsHeader(count: Int, context: String, modifier: Modifier = Modi
                 overflow = TextOverflow.Ellipsis
             )
         }
-        Text(
-            text       = "نتائج الترجمة",
-            style      = MaterialTheme.typography.labelSmall,
-            fontWeight = FontWeight.Medium,
-            color      = colors.onSurfaceVariant.copy(alpha = 0.65f)
-        )
     }
 }
 
@@ -713,7 +793,7 @@ fun SubCard(subtitle: WyzieSubtitle, onDownload: () -> Unit, modifier: Modifier 
     ) {
         Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 11.dp)) {
 
-            // Top row, LTR order: [download btn] [name(flex)] [flag]
+            // Top row: download | name | flag
             Row(
                 modifier              = Modifier.fillMaxWidth(),
                 verticalAlignment     = Alignment.CenterVertically,
@@ -841,6 +921,9 @@ fun SeriesDetailsSection(
     onClose: () -> Unit
 ) = TvPanel(
     tvShow          = tvShow,
+    posterUrl       = null,
+    year            = null,
+    overview        = null,
     isLoadingDetail = isFetchingSeasons,
     selectedSeason  = selectedSeason,
     onSelectSeason  = onSelectSeason,
