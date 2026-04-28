@@ -444,18 +444,7 @@ private fun SquigglySeekbar(
     // Played segment
     drawPathWithGaps(0f, totalProgressPx, primaryColor)
     
-    // Buffered Range
-    if (readAheadValue > 0f && duration > 0f) {
-        val readAheadFraction = ((position + readAheadValue) / duration).coerceIn(0f, 1f)
-        val readAheadPx = totalWidth * readAheadFraction
-        if (readAheadPx > totalProgressPx) {
-            drawPathWithGaps(
-                totalProgressPx,
-                readAheadPx,
-                primaryColor.copy(alpha = 0.5f)
-            )
-        }
-    }
+
 
     if (transitionEnabled) {
       val disabledAlpha = 77f / 255f
@@ -716,19 +705,7 @@ fun StandardSeekbar(
                     drawRangeWithGaps(0f, thumbGapStart, chapterGaps, primaryColor)
                 }
                 
-                // Buffered Range
-                if (readAheadValue > 0f && duration > 0f) {
-                    val readAheadFraction = ((sliderState.value + readAheadValue) / (max - min)).coerceIn(0f, 1f)
-                    val readAheadPx = size.width * readAheadFraction
-                    if (readAheadPx > thumbGapEnd) {
-                        drawRangeWithGaps(
-                            thumbGapEnd,
-                            readAheadPx,
-                            emptyList(),
-                            primaryColor.copy(alpha = 0.5f)
-                        )
-                    }
-                }
+
 
                 // 3. A-B Loop Indicators
                 if (loopStart != null || loopEnd != null) {
