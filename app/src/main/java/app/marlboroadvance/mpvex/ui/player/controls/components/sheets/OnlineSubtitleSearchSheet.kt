@@ -93,7 +93,7 @@ fun OnlineSubtitleSearchSheet(
     val keyboardController = LocalSoftwareKeyboardController.current
     val mediaInfo = remember(mediaTitle) { MediaInfoParser.parse(mediaTitle) }
     var searchQuery by remember { mutableStateOf(mediaInfo.title) }
-    // Hold the selected TMDB result so we can display its poster/overview in TvPanel
+    // Hold the selected TMDB result so we can display its poster/overview
     var selectedMedia by remember { mutableStateOf<WyzieTmdbResult?>(null) }
 
     // Auto-trigger once when title changes (NOT on every recomposition of mediaInfo)
@@ -101,19 +101,25 @@ fun OnlineSubtitleSearchSheet(
         if (mediaInfo.title.isNotBlank()) onSearchMedia(mediaInfo.title)
     }
 
+    // FIX: clear local selectedMedia when the parent clears its own state
+    // (e.g. user presses the close button on TvPanel which calls onClearMediaSelection)
+    LaunchedEffect(selectedTvShow) {
+        if (selectedTvShow == null && selectedMedia?.mediaType == "tv") {
+            selectedMedia = null
+        }
+    }
+
     val items = remember(searchResults) {
         searchResults.map { OnlineSubtitleItem.OnlineTrack(it) as OnlineSubtitleItem }.toImmutableList()
     }
 
-    val showSuggestions = mediaSearchResults.isNotEmpty()
+    val showSuggestions = mediaSearchResults.isNotEmpty() && selectedMedia == null
     val showTvPanel     = selectedTvShow != null
+    val showMoviePanel  = selectedMedia != null && selectedMedia?.mediaType == "movie" && selectedTvShow == null
     val showLoading     = isSearching || isFetchingTvDetails
     val showResults     = searchResults.isNotEmpty()
 
     // ── RTL guard ──────────────────────────────────────────────────────────
-    // Force RTL for the entire sheet so every Row/Column aligns correctly
-    // regardless of the parent's layout direction.  If the parent is already
-    // RTL this is a no-op (same value override does NOT double-flip).
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         GenericTracksSheet(
             tracks = items,
@@ -154,6 +160,7 @@ fun OnlineSubtitleSearchSheet(
                     )
 
                     // ── Autocomplete ─────────────────────────────────────
+                    // FIX: hide suggestions once the user has already selected something
                     AnimatedVisibility(
                         visible = showSuggestions,
                         enter   = expandVertically() + fadeIn(),
@@ -172,6 +179,28 @@ fun OnlineSubtitleSearchSheet(
                                 .padding(horizontal = MaterialTheme.spacing.medium)
                                 .padding(bottom = 6.dp)
                         )
+                    }
+
+                    // ── Movie panel ───────────────────────────────────────
+                    // FIX: show poster + meta for movies (they never produce a TvPanel)
+                    AnimatedVisibility(
+                        visible = showMoviePanel,
+                        enter   = expandVertically() + fadeIn(),
+                        exit    = shrinkVertically() + fadeOut()
+                    ) {
+                        selectedMedia?.let { movie ->
+                            MoviePanel(
+                                result   = movie,
+                                onBack   = {
+                                    selectedMedia = null
+                                    onClearMediaSelection()
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = MaterialTheme.spacing.medium)
+                                    .padding(bottom = 6.dp)
+                            )
+                        }
                     }
 
                     // ── TV panel ─────────────────────────────────────────
@@ -193,7 +222,10 @@ fun OnlineSubtitleSearchSheet(
                                 episodes        = seasonEpisodes,
                                 selectedEpisode = selectedEpisode,
                                 onSelectEpisode = onSelectEpisode,
-                                onBack          = onClearMediaSelection,
+                                onBack          = {
+                                    selectedMedia = null
+                                    onClearMediaSelection()
+                                },
                                 modifier        = Modifier
                                     .fillMaxWidth()
                                     .padding(horizontal = MaterialTheme.spacing.medium)
@@ -216,9 +248,12 @@ fun OnlineSubtitleSearchSheet(
 
                     // ── Results header ───────────────────────────────────
                     if (showResults) {
+                        // FIX: show movie title in context label when a movie is selected
                         val ctx = when {
                             selectedTvShow != null && selectedSeason != null && selectedEpisode != null ->
                                 "${selectedTvShow.name} \u00b7 S${selectedSeason.season_number} E${selectedEpisode.episode_number}"
+                            selectedMedia != null && selectedMedia?.mediaType == "movie" ->
+                                selectedMedia?.title ?: searchQuery
                             else -> searchQuery
                         }
                         ResultsHeader(
@@ -261,8 +296,6 @@ private fun SubSearchField(
     var focused by remember { mutableStateOf(false) }
     val border  = if (focused) MaterialTheme.subAccent else colors.outlineVariant.copy(alpha = 0.5f)
 
-    // RTL layout: Row starts from the right, so placing Search first puts it
-    // on the right (Start), TextField in the middle, and Clear last on the left (End).
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(14.dp))
@@ -301,7 +334,6 @@ private fun SubSearchField(
             decorationBox   = { inner ->
                 Box(
                     modifier         = Modifier.fillMaxWidth(),
-                    // Start = Right edge in RTL
                     contentAlignment = Alignment.CenterStart
                 ) {
                     if (query.isEmpty()) {
@@ -318,7 +350,7 @@ private fun SubSearchField(
             }
         )
 
-        // ③ Trailing icon (clear / spinner) — last in code = leftmost (End) in RTL
+        // ③ Trailing icon (clear / spinner)
         Box(Modifier.size(18.dp), contentAlignment = Alignment.Center) {
             when {
                 isBusy -> CircularProgressIndicator(
@@ -374,7 +406,6 @@ private fun SuggestionRow(result: WyzieTmdbResult, onClick: () -> Unit) {
     val isTV   = result.mediaType == "tv"
     val colors = MaterialTheme.colorScheme
 
-    // RTL visual order: [chevron(End/Left)] [poster] [info(Start/Right)]
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -383,7 +414,7 @@ private fun SuggestionRow(result: WyzieTmdbResult, onClick: () -> Unit) {
         verticalAlignment     = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        // Chevron — points right (forward) for RTL interfaces
+        // Chevron
         Icon(
             Icons.Default.ChevronRight, null,
             tint     = colors.onSurfaceVariant.copy(alpha = 0.3f),
@@ -411,7 +442,7 @@ private fun SuggestionRow(result: WyzieTmdbResult, onClick: () -> Unit) {
             }
         }
 
-        // Info — align to Start (which is the RIGHT side in RTL)
+        // Info
         Column(
             modifier            = Modifier.weight(1f),
             horizontalAlignment = Alignment.Start,
@@ -462,6 +493,125 @@ private fun SuggestionRow(result: WyzieTmdbResult, onClick: () -> Unit) {
                     lineHeight = 15.sp,
                     textAlign  = TextAlign.Right
                 )
+            }
+        }
+    }
+}
+
+// ── Movie panel ───────────────────────────────────────────────────────────────
+// FIX: new panel shown when a movie is selected — mirrors TvPanel header section
+@Composable
+private fun MoviePanel(
+    result:   WyzieTmdbResult,
+    onBack:   () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val colors = MaterialTheme.colorScheme
+    Surface(
+        modifier = modifier,
+        shape    = RoundedCornerShape(14.dp),
+        color    = colors.surfaceContainerLow,
+        border   = androidx.compose.foundation.BorderStroke(0.5.dp, colors.outlineVariant.copy(alpha = 0.45f))
+    ) {
+        Column {
+            // Title row with close button
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 9.dp),
+                verticalAlignment     = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(9.dp)
+            ) {
+                Text(
+                    text       = result.title,
+                    style      = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium,
+                    color      = colors.onSurface,
+                    maxLines   = 1,
+                    overflow   = TextOverflow.Ellipsis,
+                    modifier   = Modifier.weight(1f),
+                    textAlign  = TextAlign.Right
+                )
+                Box(
+                    modifier = Modifier
+                        .size(28.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(colors.surfaceContainerHigh)
+                        .border(0.5.dp, colors.outlineVariant.copy(alpha = 0.45f), RoundedCornerShape(8.dp))
+                        .clickable { onBack() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(Icons.Default.Close, "رجوع", tint = colors.onSurfaceVariant, modifier = Modifier.size(14.dp))
+                }
+            }
+
+            HorizontalDivider(color = colors.outlineVariant.copy(alpha = 0.35f), thickness = 0.5.dp)
+
+            // Poster + meta row
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 10.dp),
+                verticalAlignment     = Alignment.Top,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                // Poster
+                Box(
+                    modifier = Modifier
+                        .size(width = 48.dp, height = 72.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(colors.surfaceVariant)
+                        .border(0.5.dp, colors.outlineVariant.copy(alpha = 0.4f), RoundedCornerShape(8.dp)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (result.poster != null) {
+                        AsyncImage(
+                            model              = result.poster,
+                            contentDescription = result.title,
+                            contentScale       = ContentScale.Crop,
+                            modifier           = Modifier.fillMaxSize()
+                        )
+                    } else {
+                        Icon(Icons.Default.Movie, null, tint = colors.outlineVariant, modifier = Modifier.size(20.dp))
+                    }
+                }
+
+                // Meta text
+                Column(
+                    modifier            = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    // Type badge
+                    Text(
+                        text       = "فيلم",
+                        fontSize   = 9.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color      = Color(0xFF185FA5),
+                        modifier   = Modifier
+                            .clip(CircleShape)
+                            .background(Color(0x1A185FA5))
+                            .border(0.5.dp, Color(0x33185FA5), CircleShape)
+                            .padding(horizontal = 7.dp, vertical = 2.dp)
+                    )
+                    if (result.releaseYear != null) {
+                        Text(
+                            text  = result.releaseYear,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = colors.onSurfaceVariant.copy(alpha = 0.7f)
+                        )
+                    }
+                    if (!result.overview.isNullOrBlank()) {
+                        Text(
+                            text       = result.overview,
+                            style      = MaterialTheme.typography.bodySmall,
+                            color      = colors.onSurfaceVariant.copy(alpha = 0.7f),
+                            maxLines   = 3,
+                            overflow   = TextOverflow.Ellipsis,
+                            lineHeight = 16.sp,
+                            textAlign  = TextAlign.Right
+                        )
+                    }
+                }
             }
         }
     }
@@ -569,9 +719,9 @@ private fun TvPanel(
                         )
                         if (year != null) {
                             Text(
-                                text       = year,
-                                style      = MaterialTheme.typography.labelSmall,
-                                color      = colors.onSurfaceVariant.copy(alpha = 0.7f)
+                                text  = year,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = colors.onSurfaceVariant.copy(alpha = 0.7f)
                             )
                         }
                         if (!overview.isNullOrBlank()) {
@@ -719,7 +869,6 @@ private fun PillDropdown(
                 modifier = Modifier.size(13.dp).rotate(arrowDeg)
             )
             if (loading) CircularProgressIndicator(modifier = Modifier.size(11.dp), strokeWidth = 1.4.dp, color = MaterialTheme.subAccent)
-            // Start = Right edge in RTL
             Column(horizontalAlignment = Alignment.Start) {
                 Text(mainLabel, fontSize = 12.sp, fontWeight = FontWeight.Medium, color = if (enabled) colors.onSurface else colors.onSurface.copy(0.35f), lineHeight = 14.sp)
                 Text(subLabel,  fontSize = 9.sp,  color = if (enabled) colors.onSurfaceVariant.copy(0.55f) else colors.onSurface.copy(0.2f), lineHeight = 11.sp)
@@ -746,7 +895,6 @@ private fun ResultsHeader(count: Int, context: String, modifier: Modifier = Modi
         verticalAlignment     = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        // "نتائج الترجمة" placed first → sits on the right (Start) in RTL
         Text(
             text       = "نتائج الترجمة",
             style      = MaterialTheme.typography.labelSmall,
