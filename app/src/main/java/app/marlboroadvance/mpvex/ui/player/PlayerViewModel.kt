@@ -891,31 +891,60 @@ class PlayerViewModel(
     coalesceSeek(offset)
   }
 
-  fun seekTo(position: Int) {
-    viewModelScope.launch(Dispatchers.IO) {
-      val maxDuration = MPVLib.getPropertyInt("duration") ?: 0
-      var clampedPosition = position.coerceIn(0, maxDuration)
+  // Track whether we're in a drag-seek session for optimized seeking
+  private var isDragSeeking = false
 
-      // Clamp within AB loop if active
-      val loopA = _abLoopA.value
-      val loopB = _abLoopB.value
-      if (loopA != null && loopB != null) {
-        val min = minOf(loopA.toInt(), loopB.toInt())
-        val max = maxOf(loopA.toInt(), loopB.toInt())
-        clampedPosition = clampedPosition.coerceIn(min, max)
-      }
+  fun startDragSeek() {
+    isDragSeeking = true
+  }
 
-      if (clampedPosition !in 0..maxDuration) return@launch
-
-      // Cancel pending relative seek before absolute seek
-      seekCoalesceJob?.cancel()
-      pendingSeekOffset = 0
-      
-      // Use precise seeking for videos shorter than 2 minutes (120 seconds) or if preference is enabled
-      val shouldUsePreciseSeeking = playerPreferences.usePreciseSeeking.get() || maxDuration < 120
-      val seekMode = if (shouldUsePreciseSeeking) "absolute+exact" else "absolute+keyframes"
-      MPVLib.command("seek", clampedPosition.toString(), seekMode)
+  fun finishDragSeek(position: Int) {
+    isDragSeeking = false
+    // On release: one final exact seek to land on the precise frame
+    val maxDuration = preciseDuration.value.toInt().takeIf { it > 0 }
+      ?: MPVLib.propInt["duration"].value ?: 0
+    if (maxDuration <= 0) return
+    var clampedPosition = position.coerceIn(0, maxDuration)
+    val loopA = _abLoopA.value
+    val loopB = _abLoopB.value
+    if (loopA != null && loopB != null) {
+      val min = minOf(loopA.toInt(), loopB.toInt())
+      val max = maxOf(loopA.toInt(), loopB.toInt())
+      clampedPosition = clampedPosition.coerceIn(min, max)
     }
+    seekCoalesceJob?.cancel()
+    pendingSeekOffset = 0
+    MPVLib.command("seek", clampedPosition.toString(), "absolute+exact")
+  }
+
+  fun seekTo(position: Int) {
+    // Use cached duration from StateFlow — no blocking IO call
+    val maxDuration = preciseDuration.value.toInt().takeIf { it > 0 }
+      ?: MPVLib.propInt["duration"].value ?: 0
+
+    if (maxDuration <= 0) return
+
+    var clampedPosition = position.coerceIn(0, maxDuration)
+
+    // Clamp within AB loop if active
+    val loopA = _abLoopA.value
+    val loopB = _abLoopB.value
+    if (loopA != null && loopB != null) {
+      val min = minOf(loopA.toInt(), loopB.toInt())
+      val max = maxOf(loopA.toInt(), loopB.toInt())
+      clampedPosition = clampedPosition.coerceIn(min, max)
+    }
+
+    // Cancel pending relative seek before absolute seek
+    seekCoalesceJob?.cancel()
+    pendingSeekOffset = 0
+
+    // During drag: always keyframes for instant response (smooth scrubbing)
+    // On tap/release: exact for frame-accurate landing
+    val shouldUsePreciseSeeking = !isDragSeeking &&
+      (playerPreferences.usePreciseSeeking.get() || maxDuration < 120)
+    val seekMode = if (shouldUsePreciseSeeking) "absolute+exact" else "absolute+keyframes"
+    MPVLib.command("seek", clampedPosition.toString(), seekMode)
   }
 
   private fun coalesceSeek(offset: Int) {
