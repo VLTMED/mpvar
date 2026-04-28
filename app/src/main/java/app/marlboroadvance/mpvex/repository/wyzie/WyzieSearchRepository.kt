@@ -108,7 +108,8 @@ private data class TmdbRawResult(
     val name: String? = null,
     val release_date: String? = null,
     val first_air_date: String? = null,
-    val poster_path: String? = null
+    val poster_path: String? = null,
+    val overview: String? = null
 )
 
 object WyzieSources {
@@ -525,7 +526,8 @@ class WyzieSearchRepository(
                         mediaType = item.media_type,
                         title = item.title ?: item.name ?: "Unknown",
                         releaseYear = (item.release_date ?: item.first_air_date)?.take(4),
-                        poster = item.poster_path?.let { "https://image.tmdb.org/t/p/w92$it" }
+                        poster = item.poster_path?.let { "https://image.tmdb.org/t/p/w92$it" },
+                        overview = item.overview?.takeIf { it.isNotBlank() }
                     )
                 }
         }
