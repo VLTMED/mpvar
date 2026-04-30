@@ -10,11 +10,11 @@ plugins {
 }
 
 android {
-  namespace = "app.marlboroadvance.mpvex"
+  namespace = "app.marlboroadvance.mpvar"
   compileSdk = 36
 
   defaultConfig {
-    applicationId = "app.marlboroadvance.mpvex"
+    applicationId = "app.marlboroadvance.mpvar"
     minSdk = 26
     targetSdk = 36
     versionCode = 129

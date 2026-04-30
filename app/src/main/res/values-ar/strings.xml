@@ -1,5 +1,5 @@
 <resources>
-  <string name="app_name" translatable="false">mpvEx</string>
+  <string name="app_name" translatable="false">mpvAr</string>
   <string name="generic_reset">إعادة ضبط</string>
   <string name="generic_share">مشاركة</string>
   <string name="generic_confirm">تأكيد</string>
