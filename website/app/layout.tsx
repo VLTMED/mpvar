@@ -1,19 +1,14 @@
 /**
  * @file layout.tsx
- * @description Root layout component that wraps the entire application.
- * Handles font loading, theme providers, and global styles.
+ * @description تخطيط الجذر - يدعم RTL العربية الأصلية وخطوط ثمانية
  * @module app/layout
  */
 
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata, Viewport } from "next";
-import { Inter, Roboto_Mono } from "next/font/google";
 import type React from "react";
 import { ThemeProvider } from "@/lib/theme-context";
 import "./globals.css";
-
-const inter = Inter({ subsets: ["latin"] });
-const _robotoMono = Roboto_Mono({ subsets: ["latin"] });
 
 import { siteConfig } from "@/lib/site";
 
@@ -26,21 +21,14 @@ export const metadata: Metadata = {
   generator: "Next.js",
   icons: {
     icon: [
-      {
-        url: "/favicon.ico",
-        sizes: "any",
-      },
-      {
-        url: "/icon.png",
-        type: "image/png",
-        sizes: "32x32",
-      },
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.png", type: "image/png", sizes: "32x32" },
     ],
     apple: "/icon.png",
   },
   openGraph: {
     type: "website",
-    locale: "en_US",
+    locale: "ar_SA",
     url: siteConfig.url,
     title: siteConfig.name,
     description: siteConfig.description,
@@ -65,10 +53,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="ar" dir="rtl" suppressHydrationWarning>
       <body
-        className={`${inter.className} bg-background text-foreground antialiased`}
+        className="bg-background text-foreground antialiased"
         suppressHydrationWarning
+        style={{ fontFamily: "'ThmanyahSans', system-ui, sans-serif" }}
       >
         <ThemeProvider
           attribute="class"
