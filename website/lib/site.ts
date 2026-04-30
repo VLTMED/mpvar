@@ -1,18 +1,14 @@
 /**
  * @file site.ts
- * @description Central configuration file for the website's metadata, links, and constant values.
+ * @description الإعدادات المركزية للموقع - البيانات الوصفية والروابط والقيم الثابتة
  * @module lib/site
  */
 
-/**
- * Global site configuration object.
- * Contains metadata, external links, and author information used throughout the application.
- */
 export const siteConfig = {
   name: "mpvExtended",
   version: "v1.2.7",
   description:
-    "Advanced mpv-based video player for Android with powerful features, seamless playback, and open-source freedom.",
+    "مشغّل فيديو متقدم لأندرويد مبني على libmpv، بمميزات قوية وتشغيل سلس وحرية المصدر المفتوح.",
   url: "https://mpvex.vercel.app",
   ogImage: "https://mpvex.vercel.app/og.jpg",
   icons: {

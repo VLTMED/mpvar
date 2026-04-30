@@ -12,6 +12,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 1,
     },
-    // Add other routes here if in future implemne multi-route
+    // أضف مسارات أخرى هنا مستقبلاً عند توسيع التطبيق
   ];
 }

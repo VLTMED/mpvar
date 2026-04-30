@@ -15,7 +15,7 @@ export function ThemeToggle() {
   if (!mounted) {
     return (
       <Button variant="ghost" size="icon" className="w-9 h-9 opacity-0">
-        <span className="sr-only">Toggle theme</span>
+        <span className="sr-only">تبديل السمة</span>
       </Button>
     );
   }
@@ -51,7 +51,7 @@ export function ThemeToggle() {
       >
         <Moon className="h-5 w-5 text-blue-400 fill-blue-400 drop-shadow-[0_0_10px_rgba(96,165,250,0.5)]" />
       </motion.div>
-      <span className="sr-only">Toggle theme</span>
+      <span className="sr-only">تبديل السمة</span>
     </Button>
   );
 }
