@@ -19,6 +19,8 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -92,9 +94,14 @@ class MainActivity : ComponentActivity() {
         autoConnectToNetworks()
       }
 
-      MpvexTheme {
-        Surface {
-          Navigator()
+      // Force RTL layout direction for Arabic UI
+      CompositionLocalProvider(
+        LocalLayoutDirection provides LayoutDirection.Rtl
+      ) {
+        MpvexTheme {
+          Surface {
+            Navigator()
+          }
         }
       }
     }
