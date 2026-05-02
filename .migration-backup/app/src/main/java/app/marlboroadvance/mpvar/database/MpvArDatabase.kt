@@ -29,7 +29,7 @@ import app.marlboroadvance.mpvar.domain.network.NetworkConnection
   exportSchema = true,
 )
 @TypeConverters(NetworkProtocolConverter::class)
-abstract class MpvExDatabase : RoomDatabase() {
+abstract class MpvArDatabase : RoomDatabase() {
   abstract fun videoDataDao(): PlaybackStateDao
 
   abstract fun recentlyPlayedDao(): RecentlyPlayedDao

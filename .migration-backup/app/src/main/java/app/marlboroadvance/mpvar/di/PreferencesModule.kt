@@ -1,6 +1,6 @@
 package app.marlboroadvance.mpvar.di
 
-import app.marlboroadvance.mpvar.database.MpvExDatabase
+import app.marlboroadvance.mpvar.database.MpvArDatabase
 import app.marlboroadvance.mpvar.preferences.AdvancedPreferences
 import app.marlboroadvance.mpvar.preferences.AppearancePreferences
 import app.marlboroadvance.mpvar.preferences.AudioPreferences

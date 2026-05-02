@@ -3,7 +3,7 @@ package app.marlboroadvance.mpvar.preferences
 import android.content.Context
 import android.net.Uri
 import android.util.Xml
-import app.marlboroadvance.mpvar.database.MpvExDatabase
+import app.marlboroadvance.mpvar.database.MpvArDatabase
 import app.marlboroadvance.mpvar.domain.network.NetworkConnection
 import app.marlboroadvance.mpvar.domain.network.NetworkProtocol
 import app.marlboroadvance.mpvar.preferences.preference.PreferenceStore
@@ -21,10 +21,10 @@ import java.util.Locale
 class SettingsManager(
   private val context: Context,
   private val preferenceStore: PreferenceStore,
-  private val database: MpvExDatabase,
+  private val database: MpvArDatabase,
 ) {
   companion object {
-    private const val TAG_ROOT = "mpvExSettings"
+    private const val TAG_ROOT = "mpvArSettings"
     private const val TAG_PREFERENCES = "preferences"
     private const val TAG_PREFERENCE = "preference"
     private const val TAG_DATABASE = "database"

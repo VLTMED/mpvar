@@ -4,7 +4,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import app.marlboroadvance.mpvar.database.MpvExDatabase
+import app.marlboroadvance.mpvar.database.MpvArDatabase
 import app.marlboroadvance.mpvar.database.repository.PlaybackStateRepositoryImpl
 import app.marlboroadvance.mpvar.database.repository.PlaylistRepository
 import app.marlboroadvance.mpvar.database.repository.RecentlyPlayedRepositoryImpl
@@ -469,10 +469,10 @@ val DatabaseModule =
       }
     }
 
-    single<MpvExDatabase> {
+    single<MpvArDatabase> {
       val context = androidContext()
       Room
-        .databaseBuilder(context, MpvExDatabase::class.java, "mpvex.db")
+        .databaseBuilder(context, MpvArDatabase::class.java, "mpvex.db")
         .setJournalMode(RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING)
         .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9)
         .fallbackToDestructiveMigration(true) // Fallback if migration fails (last resort)
@@ -482,7 +482,7 @@ val DatabaseModule =
     singleOf(::PlaybackStateRepositoryImpl).bind(PlaybackStateRepository::class)
 
     single<RecentlyPlayedRepository> {
-      RecentlyPlayedRepositoryImpl(get<MpvExDatabase>().recentlyPlayedDao())
+      RecentlyPlayedRepositoryImpl(get<MpvArDatabase>().recentlyPlayedDao())
     }
 
     single { ThumbnailRepository(androidContext()) }
@@ -490,14 +490,14 @@ val DatabaseModule =
     single {
       app.marlboroadvance.mpvar.database.repository.VideoMetadataCacheRepository(
         context = androidContext(),
-        dao = get<MpvExDatabase>().videoMetadataDao(),
+        dao = get<MpvArDatabase>().videoMetadataDao(),
       )
     }
 
     // MediaFileRepository is a singleton object - no DI needed
 
     single {
-      get<MpvExDatabase>().networkConnectionDao()
+      get<MpvArDatabase>().networkConnectionDao()
     }
 
     single {
@@ -508,7 +508,7 @@ val DatabaseModule =
 
     single {
       PlaylistRepository(
-        playlistDao = get<MpvExDatabase>().playlistDao(),
+        playlistDao = get<MpvArDatabase>().playlistDao(),
       )
     }
   }

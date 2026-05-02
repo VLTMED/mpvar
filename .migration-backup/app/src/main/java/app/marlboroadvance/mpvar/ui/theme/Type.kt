@@ -9,10 +9,10 @@ import androidx.compose.ui.unit.sp
 import app.marlboroadvance.mpvar.R
 
 /**
- * Thmanyah Sans — Arabic-first font family
- * Supports full Arabic/RTL rendering with proper weight variants
+ * Thmanyah Sans — Arabic-first variable-weight family (5 weights)
+ * للنصوص العادية، العناوين الصغيرة، والتسميات
  */
-val ThmanyahFontFamily = FontFamily(
+val ThmanyahSansFontFamily = FontFamily(
     Font(R.font.thmanyah_light,   FontWeight.Light),
     Font(R.font.thmanyah_regular, FontWeight.Normal),
     Font(R.font.thmanyah_medium,  FontWeight.Medium),
@@ -21,113 +21,150 @@ val ThmanyahFontFamily = FontFamily(
 )
 
 /**
- * App-wide typography using Thmanyah Sans for all text styles.
- * Designed for Arabic-first UI with proper sizing for RTL readability.
+ * Thmanyah Serif Display — Arabic display family (2 weights)
+ * للعناوين الكبيرة والعناصر البارزة — يدعم الأحرف المرسلة
+ */
+val ThmanyahSerifDisplayFontFamily = FontFamily(
+    Font(R.font.thmanyahserifdisplay_bold,  FontWeight.Bold),
+    Font(R.font.thmanyahserifdisplay_black, FontWeight.Black),
+)
+
+// توافق مع الكود السابق
+val ThmanyahFontFamily = ThmanyahSansFontFamily
+
+/**
+ * تفعيل الأحرف المرسلة (Stylistic Alternates) عبر خاصية OpenType "salt"
+ * يُظهر الحروف المرسلة والكاشيدة المائلة في المواضع المناسبة داخل الكلمة
+ * مطابق لتوصيات دليل ثمانية https://font.thmanyah.com
+ */
+private const val SALT = "salt 1"
+
+/**
+ * Typography شاملة بخطوط ثمانية — عربي أولاً
+ * - Display / Headline كبير: Thmanyah Serif Display (أحرف مرسلة مفعّلة)
+ * - Headline صغير / Title / Body / Label: Thmanyah Sans
+ * - letterSpacing = 0.sp في جميع الأنماط (الكشيدة العربية لا تتوافق مع letterSpacing اللاتيني)
+ * - lineHeight مُرحَّبة للنص العربي
  */
 val AppTypography = Typography(
     displayLarge = TextStyle(
-        fontFamily = ThmanyahFontFamily,
+        fontFamily = ThmanyahSerifDisplayFontFamily,
         fontWeight = FontWeight.Black,
+        fontFeatureSettings = SALT,
         fontSize = 57.sp,
-        lineHeight = 64.sp,
-        letterSpacing = (-0.25).sp,
+        lineHeight = 72.sp,
+        letterSpacing = 0.sp,
     ),
     displayMedium = TextStyle(
-        fontFamily = ThmanyahFontFamily,
-        fontWeight = FontWeight.Bold,
+        fontFamily = ThmanyahSerifDisplayFontFamily,
+        fontWeight = FontWeight.Black,
+        fontFeatureSettings = SALT,
         fontSize = 45.sp,
-        lineHeight = 52.sp,
+        lineHeight = 58.sp,
         letterSpacing = 0.sp,
     ),
     displaySmall = TextStyle(
-        fontFamily = ThmanyahFontFamily,
+        fontFamily = ThmanyahSerifDisplayFontFamily,
         fontWeight = FontWeight.Bold,
+        fontFeatureSettings = SALT,
         fontSize = 36.sp,
-        lineHeight = 44.sp,
+        lineHeight = 48.sp,
         letterSpacing = 0.sp,
     ),
     headlineLarge = TextStyle(
-        fontFamily = ThmanyahFontFamily,
-        fontWeight = FontWeight.Bold,
+        fontFamily = ThmanyahSerifDisplayFontFamily,
+        fontWeight = FontWeight.Black,
+        fontFeatureSettings = SALT,
         fontSize = 32.sp,
-        lineHeight = 40.sp,
+        lineHeight = 44.sp,
         letterSpacing = 0.sp,
     ),
     headlineMedium = TextStyle(
-        fontFamily = ThmanyahFontFamily,
+        fontFamily = ThmanyahSerifDisplayFontFamily,
         fontWeight = FontWeight.Bold,
+        fontFeatureSettings = SALT,
         fontSize = 28.sp,
-        lineHeight = 36.sp,
+        lineHeight = 38.sp,
         letterSpacing = 0.sp,
     ),
     headlineSmall = TextStyle(
-        fontFamily = ThmanyahFontFamily,
-        fontWeight = FontWeight.Medium,
+        fontFamily = ThmanyahSansFontFamily,
+        fontWeight = FontWeight.Bold,
+        fontFeatureSettings = SALT,
         fontSize = 24.sp,
-        lineHeight = 32.sp,
+        lineHeight = 34.sp,
         letterSpacing = 0.sp,
     ),
     titleLarge = TextStyle(
-        fontFamily = ThmanyahFontFamily,
+        fontFamily = ThmanyahSansFontFamily,
         fontWeight = FontWeight.Bold,
+        fontFeatureSettings = SALT,
         fontSize = 22.sp,
-        lineHeight = 28.sp,
+        lineHeight = 32.sp,
         letterSpacing = 0.sp,
     ),
     titleMedium = TextStyle(
-        fontFamily = ThmanyahFontFamily,
+        fontFamily = ThmanyahSansFontFamily,
         fontWeight = FontWeight.Medium,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.15.sp,
-    ),
-    titleSmall = TextStyle(
-        fontFamily = ThmanyahFontFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
-        letterSpacing = 0.1.sp,
-    ),
-    bodyLarge = TextStyle(
-        fontFamily = ThmanyahFontFamily,
-        fontWeight = FontWeight.Normal,
+        fontFeatureSettings = SALT,
         fontSize = 16.sp,
         lineHeight = 26.sp,
-        letterSpacing = 0.5.sp,
+        letterSpacing = 0.sp,
     ),
-    bodyMedium = TextStyle(
-        fontFamily = ThmanyahFontFamily,
-        fontWeight = FontWeight.Normal,
+    titleSmall = TextStyle(
+        fontFamily = ThmanyahSansFontFamily,
+        fontWeight = FontWeight.Medium,
+        fontFeatureSettings = SALT,
         fontSize = 14.sp,
         lineHeight = 22.sp,
-        letterSpacing = 0.25.sp,
+        letterSpacing = 0.sp,
+    ),
+    bodyLarge = TextStyle(
+        fontFamily = ThmanyahSansFontFamily,
+        fontWeight = FontWeight.Normal,
+        fontFeatureSettings = SALT,
+        fontSize = 16.sp,
+        lineHeight = 28.sp,
+        letterSpacing = 0.sp,
+    ),
+    bodyMedium = TextStyle(
+        fontFamily = ThmanyahSansFontFamily,
+        fontWeight = FontWeight.Normal,
+        fontFeatureSettings = SALT,
+        fontSize = 14.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 0.sp,
     ),
     bodySmall = TextStyle(
-        fontFamily = ThmanyahFontFamily,
+        fontFamily = ThmanyahSansFontFamily,
         fontWeight = FontWeight.Light,
+        fontFeatureSettings = SALT,
         fontSize = 12.sp,
-        lineHeight = 18.sp,
-        letterSpacing = 0.4.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.sp,
     ),
     labelLarge = TextStyle(
-        fontFamily = ThmanyahFontFamily,
+        fontFamily = ThmanyahSansFontFamily,
         fontWeight = FontWeight.Medium,
+        fontFeatureSettings = SALT,
         fontSize = 14.sp,
-        lineHeight = 20.sp,
-        letterSpacing = 0.1.sp,
+        lineHeight = 22.sp,
+        letterSpacing = 0.sp,
     ),
     labelMedium = TextStyle(
-        fontFamily = ThmanyahFontFamily,
+        fontFamily = ThmanyahSansFontFamily,
         fontWeight = FontWeight.Medium,
+        fontFeatureSettings = SALT,
         fontSize = 12.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp,
+        lineHeight = 18.sp,
+        letterSpacing = 0.sp,
     ),
     labelSmall = TextStyle(
-        fontFamily = ThmanyahFontFamily,
+        fontFamily = ThmanyahSansFontFamily,
         fontWeight = FontWeight.Normal,
+        fontFeatureSettings = SALT,
         fontSize = 11.sp,
         lineHeight = 16.sp,
-        letterSpacing = 0.5.sp,
+        letterSpacing = 0.sp,
     ),
 )

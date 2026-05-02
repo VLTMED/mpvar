@@ -225,6 +225,8 @@
   <string name="pref_advanced_clear_playback_history_confirm_title">هل تريد مسح سجل التشغيل؟</string>
   <string name="pref_advanced_clear_playback_history_confirm_subtitle">سيُمسَح سجل مواضع التشغيل والترجمات والمسارات الصوتية المختارة مع تأخيراتها وسرعاتها لجميع الوسائط السابقة</string>
   <string name="pref_advanced_cleared_playback_history">تم مسح سجل التشغيل</string>
+  <string name="pref_advanced_cleared_config_cache_toast">تم مسح ذاكرة الإعدادات المؤقتة</string>
+  <string name="pref_advanced_cleared_thumbnail_cache_toast">تم مسح ذاكرة الصور المصغرة</string>
   <string name="pref_advanced_clear_fonts_cache">مسح الخطوط المخزّنة مؤقتاً</string>
   <string name="pref_advanced_cleared_fonts_cache">تم مسح الخطوط المخزّنة مؤقتاً</string>
   <string name="pref_advanced_enable_recently_played_title">المُشاهَد مؤخراً</string>

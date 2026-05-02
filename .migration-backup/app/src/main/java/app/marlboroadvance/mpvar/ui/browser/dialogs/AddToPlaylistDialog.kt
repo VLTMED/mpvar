@@ -82,9 +82,9 @@ fun AddToPlaylistDialog(
           }
           repository.addItemsToPlaylist(playlistId.toInt(), items)
           val message = if (videos.size == 1) {
-            "Video added to \"$name\""
+            "تمت إضافة الفيديو إلى \"$name\""
           } else {
-            "${videos.size} videos added to \"$name\""
+            "تمت إضافة ${videos.size} فيديو إلى \"$name\""
           }
           Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
           showCreateDialog = false
@@ -100,7 +100,7 @@ fun AddToPlaylistDialog(
     onDismissRequest = onDismiss,
     title = {
       Text(
-        text = "Add to Playlist",
+        text = "إضافة إلى قائمة تشغيل",
         style = MaterialTheme.typography.headlineMedium,
         fontWeight = FontWeight.Bold,
       )
@@ -113,9 +113,9 @@ fun AddToPlaylistDialog(
         // Show video count
         Text(
           text = if (videos.size == 1) {
-            "Adding 1 video to playlist"
+            "إضافة فيديو واحد إلى قائمة التشغيل"
           } else {
-            "Adding ${videos.size} videos to playlist"
+            "إضافة ${videos.size} فيديو إلى قائمة التشغيل"
           },
           style = MaterialTheme.typography.bodyMedium,
           color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -134,7 +134,7 @@ fun AddToPlaylistDialog(
           )
           Spacer(modifier = Modifier.width(8.dp))
           Text(
-            text = "Create New Playlist",
+            text = "إنشاء قائمة تشغيل جديدة",
             fontWeight = FontWeight.Medium,
           )
         }
@@ -142,7 +142,7 @@ fun AddToPlaylistDialog(
         // Existing playlists
         if (playlists.isNotEmpty()) {
           Text(
-            text = "Existing Playlists",
+            text = "قوائم التشغيل الموجودة",
             style = MaterialTheme.typography.labelLarge,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary,
@@ -164,9 +164,9 @@ fun AddToPlaylistDialog(
                     }
                     repository.addItemsToPlaylist(playlist.id, items)
                     val message = if (videos.size == 1) {
-                      "Video added to \"${playlist.name}\""
+                      "تمت إضافة الفيديو إلى \"${playlist.name}\""
                     } else {
-                      "${videos.size} videos added to \"${playlist.name}\""
+                      "تمت إضافة ${videos.size} فيديو إلى \"${playlist.name}\""
                     }
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                   }
@@ -191,7 +191,7 @@ fun AddToPlaylistDialog(
         ),
         shape = MaterialTheme.shapes.extraLarge,
       ) {
-        Text("Done", fontWeight = FontWeight.Bold)
+        Text("تم", fontWeight = FontWeight.Bold)
       }
     },
     dismissButton = {
@@ -199,7 +199,7 @@ fun AddToPlaylistDialog(
         onClick = onDismiss,
         shape = MaterialTheme.shapes.extraLarge,
       ) {
-        Text("Cancel", fontWeight = FontWeight.Medium)
+        Text("إلغاء", fontWeight = FontWeight.Medium)
       }
     },
     containerColor = MaterialTheme.colorScheme.surface,
@@ -283,13 +283,13 @@ private fun EmptyPlaylistsMessage() {
         tint = MaterialTheme.colorScheme.onSurfaceVariant,
       )
       Text(
-        text = "No playlists yet",
+        text = "لا توجد قوائم تشغيل بعد",
         style = MaterialTheme.typography.titleMedium,
         fontWeight = FontWeight.Bold,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
       )
       Text(
-        text = "Create your first playlist above",
+        text = "أنشئ قائمة التشغيل الأولى أعلاه",
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
       )
@@ -308,7 +308,7 @@ private fun CreatePlaylistDialog(
     onDismissRequest = onDismiss,
     title = {
       Text(
-        text = "Create New Playlist",
+        text = "إنشاء قائمة تشغيل جديدة",
         style = MaterialTheme.typography.headlineSmall,
         fontWeight = FontWeight.Bold,
       )
@@ -317,7 +317,7 @@ private fun CreatePlaylistDialog(
       OutlinedTextField(
         value = playlistName,
         onValueChange = { playlistName = it },
-        label = { Text("Playlist Name") },
+        label = { Text("اسم قائمة التشغيل") },
         singleLine = true,
         modifier = Modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.medium,
@@ -333,7 +333,7 @@ private fun CreatePlaylistDialog(
         enabled = playlistName.isNotBlank(),
         shape = MaterialTheme.shapes.extraLarge,
       ) {
-        Text("Create", fontWeight = FontWeight.Bold)
+        Text("إنشاء", fontWeight = FontWeight.Bold)
       }
     },
     dismissButton = {
@@ -341,7 +341,7 @@ private fun CreatePlaylistDialog(
         onClick = onDismiss,
         shape = MaterialTheme.shapes.extraLarge,
       ) {
-        Text("Cancel", fontWeight = FontWeight.Medium)
+        Text("إلغاء", fontWeight = FontWeight.Medium)
       }
     },
     containerColor = MaterialTheme.colorScheme.surface,
