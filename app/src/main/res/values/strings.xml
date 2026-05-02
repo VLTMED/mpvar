@@ -530,6 +530,6 @@
   <string name="permission_storage_required">mpvAr requires \"Storage\" permission to access and play your media files stored on your device.</string>
   <string name="permission_all_files_required">mpvAr requires \"All file access\" permission to discover media and subtitles on your device due to a change in security policy in Android 11 and later versions.</string>
   <string name="permission_needs_access">mpvAr needs access to your video files to provide its core functionality as a media player.</string>
-  <string name="permission_always_required">mpvAr has always required storage access permission as it's essential for the app to find all media and subtitle files on your device, including the ones that are not supported by the system.</string>
+  <string name="permission_always_required">mpvAr has always required storage access permission as it\'s essential for the app to find all media and subtitle files on your device, including the ones that are not supported by the system.</string>
   <string name="permission_open_source_info">mpvAr is an open source project. You can review the source code and verify how permissions are used by visiting our GitHub repository at:</string>
 </resources>
