@@ -481,7 +481,7 @@
   <string name="video_url">رابط الفيديو</string>
   <string name="choose_local_m3u_file">اختر ملف M3U محلياً</string>
   <string name="add_from_url">إضافة من رابط</string>
-  <string name="home">الصحة الرئيسية</string>
+  <string name="home">الرئيسية</string>
   <string name="recents">السجل</string>
   <string name="playlists">قوائم التشغيل</string>
   <string name="network">شبكة</string>
@@ -518,4 +518,19 @@
   <string name="playlist_refresh_success">تم تحديث قائمة التشغيل بنجاح</string>
   <string name="playlist_refresh_error">تعذّر تحديث قائمة التشغيل: %s</string>
   <string name="playlist_m3u_badge">M3U</string>
+
+  <!-- Wyzie subtitle API -->
+  <string name="pref_wyzie_api_key_title">مفتاح واجهة Wyzie</string>
+  <string name="pref_wyzie_api_key_summary">مطلوب لاستخدام بحث الترجمة عبر sub.wyzie.io — احصل على مفتاح مجاني من sub.wyzie.io/register</string>
+  <string name="pref_wyzie_api_key_placeholder">wyzie-abc123xyz</string>
+  <!-- Media Info screen -->
+  <string name="media_info_title">معلومات الوسائط</string>
+  <string name="media_info_generated_by">تم التوليد بواسطة mpvAr باستخدام MediaInfoLib</string>
+  <!-- Permission explanations -->
+  <string name="permission_photos_videos_required">يحتاج mpvAr إلى إذن \"الصور ومقاطع الفيديو\" للوصول إلى ملفات الفيديو الموجودة على جهازك وتشغيلها.</string>
+  <string name="permission_storage_required">يحتاج mpvAr إلى إذن \"التخزين\" للوصول إلى ملفات الوسائط الموجودة على جهازك وتشغيلها.</string>
+  <string name="permission_all_files_required">يحتاج mpvAr إلى إذن \"الوصول الكامل للملفات\" لاكتشاف ملفات الوسائط والترجمات على جهازك، وذلك بسبب تغيير في سياسة الأمان في Android 11 والإصدارات الأحدث.</string>
+  <string name="permission_needs_access">يحتاج mpvAr إلى الوصول لملفات الفيديو الخاصة بك لتوفير وظيفته الأساسية كمشغّل وسائط.</string>
+  <string name="permission_always_required">دائمًا ما احتاج mpvAr إلى إذن الوصول للتخزين، إذ إنه ضروري لتتمكّن التطبيق من العثور على جميع ملفات الوسائط والترجمات على جهازك، بما في ذلك الملفات غير المدعومة من قبل النظام.</string>
+  <string name="permission_open_source_info">mpvAr مشروع مفتوح المصدر. يمكنك مراجعة الكود المصدري والتحقق من كيفية استخدام الأذونات بزيارة مستودعنا على GitHub:</string>
 </resources>

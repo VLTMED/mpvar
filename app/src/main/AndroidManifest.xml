@@ -220,7 +220,7 @@
             android:name=".ui.mediainfo.MediaInfoActivity"
             android:exported="true"
             android:theme="@style/Theme.mpvar"
-            android:label="Media Info">
+            android:label="@string/media_info_title">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
