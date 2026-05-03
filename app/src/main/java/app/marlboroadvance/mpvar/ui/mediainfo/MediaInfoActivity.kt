@@ -59,6 +59,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
+import app.marlboroadvance.mpvar.R
 import app.marlboroadvance.mpvar.preferences.AppearancePreferences
 import app.marlboroadvance.mpvar.preferences.preference.collectAsState
 import app.marlboroadvance.mpvar.ui.theme.DarkMode

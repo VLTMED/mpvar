@@ -1,5 +1,7 @@
 package app.marlboroadvance.mpvar.preferences
 
+import app.marlboroadvance.mpvar.R
+
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.Segment
