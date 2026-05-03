@@ -136,7 +136,7 @@ fun PlayerSheets(
         onOpenSubtitleDelay = { onOpenPanel(Panels.SubtitleDelay) },
         onOpenOnlineSearch = {
           if (subtitlesPreferencesForApiCheck.wyzieApiKey.get().isBlank()) {
-            viewModel.showToast("Wyzie API key not set. Add your key in Settings → Subtitles → Wyzie API Key")
+            viewModel.showToast("مفتاح Wyzie API غير مُعيَّن. أضف مفتاحك من الإعدادات ← الترجمة ← Wyzie API Key")
           } else {
             onShowSheet(Sheets.OnlineSubtitleSearch)
           }

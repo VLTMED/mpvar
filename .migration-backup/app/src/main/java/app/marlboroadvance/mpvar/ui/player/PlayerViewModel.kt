@@ -423,16 +423,16 @@ class PlayerViewModel(
         val path =
           uri.resolveUri(host.context)
             ?: return@launch withContext(Dispatchers.Main) {
-              showToast("Failed to load audio file: Invalid URI")
+              showToast("فشل تحميل ملف الصوت: رابط غير صالح")
             }
 
         MPVLib.command("audio-add", path, "cached")
         withContext(Dispatchers.Main) {
-          showToast("Audio track added")
+          showToast("تمت إضافة المسار الصوتي")
         }
       }.onFailure { e ->
         withContext(Dispatchers.Main) {
-          showToast("Failed to load audio: ${e.message}")
+          showToast("فشل تحميل الصوت: ${e.message}")
         }
         android.util.Log.e("PlayerViewModel", "Error adding audio", e)
       }
@@ -452,7 +452,7 @@ class PlayerViewModel(
 
         if (!isValidSubtitleFile(fileName)) {
           return@launch withContext(Dispatchers.Main) {
-            showToast("Invalid subtitle file format")
+            showToast("صيغة ملف الترجمة غير صالحة")
           }
         }
 
@@ -492,7 +492,7 @@ class PlayerViewModel(
       }.onFailure {
         if (!silent) {
           withContext(Dispatchers.Main) {
-            showToast("Failed to load subtitle")
+            showToast("فشل تحميل الترجمة")
           }
         }
       }
@@ -621,7 +621,7 @@ class PlayerViewModel(
           _externalSubtitles.remove(originalUriString)
           mpvPathToUriMap.remove(mpvPath)
           withContext(Dispatchers.Main) {
-            showToast("Subtitle deleted")
+            showToast("تم حذف الترجمة")
           }
         }
       }
@@ -679,7 +679,7 @@ class PlayerViewModel(
           _seasonEpisodes.value = emptyList()
         }
         .onFailure {
-          showToast("Failed to load series details: ${it.message}")
+          showToast("فشل تحميل تفاصيل المسلسل: ${it.message}")
         }
       _isFetchingTvDetails.value = false
     }
@@ -698,7 +698,7 @@ class PlayerViewModel(
           _selectedEpisode.value = null
         }
         .onFailure {
-          showToast("Failed to load episodes: ${it.message}")
+          showToast("فشل تحميل الحلقات: ${it.message}")
         }
       _isFetchingEpisodes.value = false
     }
@@ -721,7 +721,7 @@ class PlayerViewModel(
   // --- Subtitle Search ---
   fun searchSubtitles(query: String, season: Int? = null, episode: Int? = null, year: String? = null) {
     if (subtitlesPreferences.wyzieApiKey.get().isBlank()) {
-      showToast("Wyzie API key not set. Go to Settings → Subtitles to add your free key from sub.wyzie.io/redeem")
+      showToast("مفتاح Wyzie API غير مُعيَّن. اذهب إلى الإعدادات ← الترجمة لإضافة مفتاحك المجاني من sub.wyzie.io/redeem")
       return
     }
      viewModelScope.launch {
@@ -731,7 +731,7 @@ class PlayerViewModel(
                  _wyzieSearchResults.value = results
              }
              .onFailure {
-                 showToast("Search failed: ${it.message}")
+                 showToast("فشل البحث: ${it.message}")
              }
          _isSearchingSub.value = false
      }
@@ -745,7 +745,7 @@ class PlayerViewModel(
                   addSubtitle(uri)
               }
               .onFailure {
-                  showToast("Download failed: ${it.message}")
+                  showToast("فشل التنزيل: ${it.message}")
               }
           _isDownloadingSub.value = false
       }
@@ -1349,7 +1349,7 @@ class PlayerViewModel(
         // Check if file was created
         if (!tempFile.exists() || tempFile.length() == 0L) {
           withContext(Dispatchers.Main) {
-            Toast.makeText(context, "Failed to create screenshot", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "فشل إنشاء لقطة الشاشة", Toast.LENGTH_SHORT).show()
           }
           return@launch
         }
@@ -1442,7 +1442,7 @@ class PlayerViewModel(
         }
       } catch (e: Exception) {
         withContext(Dispatchers.Main) {
-          Toast.makeText(context, "Failed to save snapshot: ${e.message}", Toast.LENGTH_LONG).show()
+          Toast.makeText(context, "فشل حفظ الصورة: ${e.message}", Toast.LENGTH_LONG).show()
         }
       } finally {
         _isSnapshotLoading.value = false

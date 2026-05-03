@@ -42,8 +42,8 @@ fun FileOperationProgressDialog(
 
   val operationName =
     when (operationType) {
-      is CopyPasteOps.OperationType.Copy -> "Copying"
-      is CopyPasteOps.OperationType.Move -> "Moving"
+      is CopyPasteOps.OperationType.Copy -> "نسخ"
+      is CopyPasteOps.OperationType.Move -> "نقل"
     }
 
   val isOperationComplete = progress.isComplete || progress.isCancelled || progress.error != null
@@ -77,14 +77,14 @@ fun FileOperationProgressDialog(
           }
           progress.isComplete -> {
             StatusCard(
-              message = "Operation completed successfully!",
+              message = "اكتملت العملية بنجاح!",
               containerColor = MaterialTheme.colorScheme.primaryContainer,
               contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
             )
           }
           progress.isCancelled -> {
             StatusCard(
-              message = "Operation cancelled",
+              message = "تم إلغاء العملية",
               containerColor = MaterialTheme.colorScheme.secondaryContainer,
               contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
             )
@@ -97,7 +97,7 @@ fun FileOperationProgressDialog(
             // Current File Info
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
               Text(
-                text = "File ${progress.currentFileIndex} of ${progress.totalFiles}",
+                text = "الملف ${progress.currentFileIndex} من ${progress.totalFiles}",
                 style = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -114,13 +114,13 @@ fun FileOperationProgressDialog(
 
             // Current File Progress
             ProgressSection(
-              label = "Current file",
+              label = "الملف الحالي",
               progress = progress.currentFileProgress,
             )
 
             // Overall Progress
             ProgressSection(
-              label = "Overall progress",
+              label = "التقدم الكلي",
               progress = progress.overallProgress,
             )
 
@@ -141,11 +141,11 @@ fun FileOperationProgressDialog(
         if (isOperationComplete) {
           Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             SummaryRow(
-              label = "Files processed",
+              label = "الملفات المعالَجة",
               value = "${progress.currentFileIndex} / ${progress.totalFiles}",
             )
             SummaryRow(
-              label = "Total size",
+              label = "الحجم الكلي",
               value = CopyPasteOps.formatBytes(progress.totalBytes),
             )
           }
@@ -162,7 +162,7 @@ fun FileOperationProgressDialog(
             ),
           shape = MaterialTheme.shapes.extraLarge,
         ) {
-          Text("Done", fontWeight = FontWeight.Bold)
+          Text("تم", fontWeight = FontWeight.Bold)
         }
       } else {
         TextButton(
@@ -171,10 +171,10 @@ fun FileOperationProgressDialog(
         ) {
           Icon(
             imageVector = Icons.Default.Cancel,
-            contentDescription = "Cancel",
+            contentDescription = "إلغاء",
             modifier = Modifier.padding(end = 4.dp),
           )
-          Text("Cancel", fontWeight = FontWeight.Medium)
+          Text("إلغاء", fontWeight = FontWeight.Medium)
         }
       }
     },

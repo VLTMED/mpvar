@@ -80,27 +80,27 @@ val allPlayerButtons =
 @Composable
 fun getPlayerButtonLabel(button: PlayerButton): String =
   when (button) {
-    PlayerButton.BACK_ARROW -> "Back Arrow" // stringResource(R.string.btn_label_back)
-    PlayerButton.VIDEO_TITLE -> "Video Title" // stringResource(R.string.btn_label_title)
-    PlayerButton.BOOKMARKS_CHAPTERS -> "Chapters / Bookmarks" // stringResource(R.string.btn_label_bookmarks)
-    PlayerButton.PLAYBACK_SPEED -> "Playback Speed" // stringResource(R.string.btn_label_speed)
-    PlayerButton.DECODER -> "Decoder" // stringResource(R.string.btn_label_decoder)
-    PlayerButton.SCREEN_ROTATION -> "Screen Rotation" // stringResource(R.string.btn_label_rotation)
-    PlayerButton.FRAME_NAVIGATION -> "Frame Navigation" // stringResource(R.string.btn_label_frame_nav)
-    PlayerButton.VIDEO_ZOOM -> "Video Zoom" // stringResource(R.string.btn_label_zoom)
-    PlayerButton.PICTURE_IN_PICTURE -> "Picture-in-Picture" // stringResource(R.string.btn_label_pip)
-    PlayerButton.ASPECT_RATIO -> "Aspect Ratio" // stringResource(R.string.btn_label_aspect)
-    PlayerButton.LOCK_CONTROLS -> "Lock Controls" // stringResource(R.string.btn_label_lock)
-    PlayerButton.AUDIO_TRACK -> "Audio Track" // stringResource(R.string.btn_label_audio)
-    PlayerButton.SUBTITLES -> "Subtitles" // stringResource(R.string.btn_label_subtitles)
-    PlayerButton.MORE_OPTIONS -> "More Options" // stringResource(R.string.btn_label_more)
-    PlayerButton.CURRENT_CHAPTER -> "Current Chapter" // stringResource(R.string.btn_label_chapter)
-    PlayerButton.REPEAT_MODE -> "Repeat Mode" // stringResource(R.string.btn_label_repeat_mode)
-    PlayerButton.SHUFFLE -> "Shuffle" // stringResource(R.string.btn_label_shuffle)
-    PlayerButton.MIRROR -> "Horizontal Flip"
-    PlayerButton.VERTICAL_FLIP -> "Vertical Flip"
-    PlayerButton.AB_LOOP -> "A-B Loop"
-    PlayerButton.CUSTOM_SKIP -> "Custom Skip"
-    PlayerButton.BACKGROUND_PLAYBACK -> "Background Playback"
-    PlayerButton.NONE -> "None"
+    PlayerButton.BACK_ARROW -> "سهم الرجوع"
+    PlayerButton.VIDEO_TITLE -> "عنوان الفيديو"
+    PlayerButton.BOOKMARKS_CHAPTERS -> "الفصول / الإشارات"
+    PlayerButton.PLAYBACK_SPEED -> "سرعة التشغيل"
+    PlayerButton.DECODER -> "وحدة فك الترميز"
+    PlayerButton.SCREEN_ROTATION -> "تدوير الشاشة"
+    PlayerButton.FRAME_NAVIGATION -> "التنقل بين الإطارات"
+    PlayerButton.VIDEO_ZOOM -> "تكبير الفيديو"
+    PlayerButton.PICTURE_IN_PICTURE -> "صورة داخل صورة"
+    PlayerButton.ASPECT_RATIO -> "نسبة العرض للارتفاع"
+    PlayerButton.LOCK_CONTROLS -> "قفل عناصر التحكم"
+    PlayerButton.AUDIO_TRACK -> "المسار الصوتي"
+    PlayerButton.SUBTITLES -> "الترجمة"
+    PlayerButton.MORE_OPTIONS -> "المزيد من الخيارات"
+    PlayerButton.CURRENT_CHAPTER -> "الفصل الحالي"
+    PlayerButton.REPEAT_MODE -> "وضع التكرار"
+    PlayerButton.SHUFFLE -> "تشغيل عشوائي"
+    PlayerButton.MIRROR -> "قلب أفقي"
+    PlayerButton.VERTICAL_FLIP -> "قلب عمودي"
+    PlayerButton.AB_LOOP -> "تكرار A-B"
+    PlayerButton.CUSTOM_SKIP -> "تخطي مخصص"
+    PlayerButton.BACKGROUND_PLAYBACK -> "التشغيل في الخلفية"
+    PlayerButton.NONE -> "بلا"
   }

@@ -611,7 +611,7 @@ object SubtitlesPreferencesScreen : Screen {
                             }
                           }.onFailure { e ->
                             withContext(Dispatchers.Main) {
-                              android.widget.Toast.makeText(context, "Error: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
+                              android.widget.Toast.makeText(context, "خطأ: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
                             }
                           }
                         }

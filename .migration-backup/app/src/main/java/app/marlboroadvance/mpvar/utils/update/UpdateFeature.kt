@@ -417,7 +417,7 @@ fun UpdateDialog(
         title = {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
-                    text = if (actionLabel == "Install") "Ready to Install" else "Update Available",
+                    text = if (actionLabel == "Install") "جاهز للتثبيت" else "تحديث متاح",
                     style = MaterialTheme.typography.titleLarge
                 )
                 Spacer(modifier = Modifier.height(4.dp))
@@ -436,10 +436,10 @@ fun UpdateDialog(
             ) {
                 if (actionLabel != "Install") {
                     // Show version info for update available state
-                    InfoRow(label = "Current Version", value = currentVersion)
-                    InfoRow(label = "Latest Version", value = release.tagName.removePrefix("v"))
-                    InfoRow(label = "Release Date", value = formattedDate)
-                    InfoRow(label = "Size", value = formatFileSize(downloadSize))
+                    InfoRow(label = "الإصدار الحالي", value = currentVersion)
+                    InfoRow(label = "أحدث إصدار", value = release.tagName.removePrefix("v"))
+                    InfoRow(label = "تاريخ الإصدار", value = formattedDate)
+                    InfoRow(label = "الحجم", value = formatFileSize(downloadSize))
                 }
 
                 if (isDownloading) {
@@ -448,7 +448,7 @@ fun UpdateDialog(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(text = "Downloading...", style = MaterialTheme.typography.bodySmall)
+                        Text(text = "جارٍ التنزيل...", style = MaterialTheme.typography.bodySmall)
                         Text(text = "${progress.toInt()}%", style = MaterialTheme.typography.bodySmall)
                     }
                     Spacer(modifier = Modifier.height(8.dp))
@@ -464,7 +464,7 @@ fun UpdateDialog(
         confirmButton = {
             if (!isDownloading) {
                 Button(onClick = onAction) {
-                    Text(if (actionLabel == "Install") "Install" else "Download")
+                    Text(if (actionLabel == "Install") "تثبيت" else "تنزيل")
                 }
             }
         },
@@ -473,11 +473,11 @@ fun UpdateDialog(
                 Row {
                     if (actionLabel != "Install") {
                         TextButton(onClick = onIgnore) {
-                            Text("Ignore")
+                            Text("تجاهل")
                         }
                     }
                     TextButton(onClick = onDismiss) {
-                        Text("Cancel")
+                        Text("إلغاء")
                     }
                 }
             }
@@ -507,7 +507,7 @@ private fun InfoRow(label: String, value: String) {
 }
 
 private fun formatFileSize(size: Long): String {
-    if (size <= 0) return "Unknown size"
+    if (size <= 0) return "حجم غير معروف"
     val units = arrayOf("B", "KB", "MB", "GB", "TB")
     val digitGroups = (Math.log10(size.toDouble()) / Math.log10(1024.0)).toInt()
     return String.format("%.1f %s", size / Math.pow(1024.0, digitGroups.toDouble()), units[digitGroups])
