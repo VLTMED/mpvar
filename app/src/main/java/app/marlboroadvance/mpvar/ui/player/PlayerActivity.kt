@@ -44,7 +44,7 @@ import app.marlboroadvance.mpvar.preferences.BrowserPreferences
 import app.marlboroadvance.mpvar.preferences.PlayerPreferences
 import app.marlboroadvance.mpvar.preferences.SubtitlesPreferences
 import app.marlboroadvance.mpvar.ui.player.controls.PlayerControls
-import app.marlboroadvance.mpvar.ui.theme.MpvexTheme
+import app.marlboroadvance.mpvar.ui.theme.MpvArTheme
 import app.marlboroadvance.mpvar.utils.history.RecentlyPlayedOps
 import app.marlboroadvance.mpvar.utils.media.HttpUtils
 import app.marlboroadvance.mpvar.utils.media.SubtitleOps
@@ -477,7 +477,7 @@ class PlayerActivity :
   @RequiresApi(Build.VERSION_CODES.P)
   private fun setupPlayerControls() {
     binding.controls.setContent {
-      MpvexTheme {
+      MpvArTheme {
         PlayerControls(
           viewModel = viewModel,
           onBackPress = {
@@ -3353,6 +3353,6 @@ class PlayerActivity :
     /**
      * General tag for logging from PlayerActivity.
      */
-    const val TAG = "mpvex"
+    const val TAG = "mpvAr"
   }
 }

@@ -42,7 +42,7 @@ import app.marlboroadvance.mpvar.utils.update.UpdateDialog
 import app.marlboroadvance.mpvar.utils.update.UpdateViewModel
 import app.marlboroadvance.mpvar.ui.browser.MainScreen
 import app.marlboroadvance.mpvar.ui.theme.DarkMode
-import app.marlboroadvance.mpvar.ui.theme.MpvexTheme
+import app.marlboroadvance.mpvar.ui.theme.MpvArTheme
 import app.marlboroadvance.mpvar.ui.utils.LocalBackStack
 import app.marlboroadvance.mpvar.utils.permission.PermissionUtils
 import kotlinx.coroutines.CoroutineScope
@@ -98,7 +98,7 @@ class MainActivity : ComponentActivity() {
       CompositionLocalProvider(
         LocalLayoutDirection provides LayoutDirection.Rtl
       ) {
-        MpvexTheme {
+        MpvArTheme {
           Surface {
             Navigator()
           }

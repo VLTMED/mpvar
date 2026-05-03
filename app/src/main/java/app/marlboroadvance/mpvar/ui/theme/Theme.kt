@@ -207,7 +207,7 @@ private fun ThemeTransitionContent(content: @Composable () -> Unit) {
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun MpvexTheme(content: @Composable () -> Unit) {
+fun MpvArTheme(content: @Composable () -> Unit) {
     val preferences = koinInject<AppearancePreferences>()
     val darkMode by preferences.darkMode.collectAsState()
     val amoledMode by preferences.amoledMode.collectAsState()

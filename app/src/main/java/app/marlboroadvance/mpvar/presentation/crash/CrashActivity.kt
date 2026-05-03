@@ -62,7 +62,7 @@ import app.marlboroadvance.mpvar.R
 import app.marlboroadvance.mpvar.preferences.AppearancePreferences
 import app.marlboroadvance.mpvar.preferences.preference.collectAsState
 import app.marlboroadvance.mpvar.ui.theme.DarkMode
-import app.marlboroadvance.mpvar.ui.theme.MpvexTheme
+import app.marlboroadvance.mpvar.ui.theme.MpvArTheme
 import app.marlboroadvance.mpvar.ui.theme.spacing
 import `is`.xyz.mpv.Utils
 import kotlinx.coroutines.Dispatchers
@@ -94,7 +94,7 @@ class CrashActivity : ComponentActivity() {
           darkScrim = Color.Transparent.toArgb(),
         ) { isDarkMode },
       )
-      MpvexTheme {
+      MpvArTheme {
         CrashScreen(intent.getStringExtra("exception") ?: "")
       }
     }
@@ -163,7 +163,7 @@ class CrashActivity : ComponentActivity() {
       activity: Activity,
     ) {
       withContext(NonCancellable) {
-        val file = File(activity.cacheDir, "mpvex_logs.txt")
+        val file = File(activity.cacheDir, "mpvAr_logs.txt")
         if (file.exists()) file.delete()
         file.createNewFile()
         file.appendText(concatLogs(deviceInfo, exceptionString, logcat))

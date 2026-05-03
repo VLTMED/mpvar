@@ -63,7 +63,7 @@ import app.marlboroadvance.mpvar.R
 import app.marlboroadvance.mpvar.preferences.AppearancePreferences
 import app.marlboroadvance.mpvar.preferences.preference.collectAsState
 import app.marlboroadvance.mpvar.ui.theme.DarkMode
-import app.marlboroadvance.mpvar.ui.theme.MpvexTheme
+import app.marlboroadvance.mpvar.ui.theme.MpvArTheme
 import app.marlboroadvance.mpvar.utils.media.MediaInfoOps
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -90,7 +90,7 @@ class MediaInfoActivity : ComponentActivity() {
         ) { isDarkMode },
       )
 
-      MpvexTheme {
+      MpvArTheme {
         Surface {
           MediaInfoScreen(
             onBack = { finish() },
