@@ -337,13 +337,15 @@ class WyzieSearchRepository(
                 // Wyzie API language format: single or multiple language codes are comma separated: `language=en,es`
                 language?.filter { !it.isWhitespace() }?.let { append("&language=${encode(it)}") }
                 
-                // Format and Encoding parameters
-                format?.split(",")?.filter { it.isNotBlank() }?.forEach { append("&${encode(it.trim())}=true") }
-                encoding?.split(",")?.filter { it.isNotBlank() }?.forEach { append("&${encode(it.trim())}=true") }
-                
-                // Source is a special case, "all" defaults to all sources implicitly, but adding specific sources works like `opensubtitles=true`
+                // Format filter: &format=srt,ass (comma-separated per API docs)
+                format?.filter { !it.isWhitespace() }?.let { append("&format=${encode(it)}") }
+
+                // Encoding filter: &encoding=utf-8 (comma-separated per API docs)
+                encoding?.filter { !it.isWhitespace() }?.let { append("&encoding=${encode(it)}") }
+
+                // Source filter: &source=opensubtitles,subdl — "all" means omit param (default)
                 if (source != "all") {
-                   source.split(",").filter { it.isNotBlank() }.forEach { append("&${encode(it.trim())}=true") }
+                    append("&source=${encode(source)}")
                 }
 
                 append("&unzip=true")
