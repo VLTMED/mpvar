@@ -26,7 +26,6 @@ jobs:
         with:
           fetch-depth: 0
           ref: main
-          lfs: true
 
       - name: Setup JDK 17
         uses: actions/setup-java@v4
@@ -37,6 +36,15 @@ jobs:
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
+
+
+      - name: Download mpv-android lib
+        run: |
+          git clone --depth=1 https://github.com/marlboro-advance/mpvEx.git /tmp/mpvex_source
+          cd /tmp/mpvex_source
+          git lfs pull -- app/libs/mpv-android-lib-v0.0.1.aar
+          cp app/libs/mpv-android-lib-v0.0.1.aar $GITHUB_WORKSPACE/app/libs/mpv-android-lib-v0.0.1.aar
+          ls -lh $GITHUB_WORKSPACE/app/libs/mpv-android-lib-v0.0.1.aar
 
       - name: Build with Gradle
         run: ./gradlew assembleStandardPreview
