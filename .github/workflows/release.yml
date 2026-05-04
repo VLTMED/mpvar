@@ -20,6 +20,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: main
+          lfs: true
 
       - name: Setup JDK 17
         uses: actions/setup-java@v4
