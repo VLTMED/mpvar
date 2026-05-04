@@ -1,5 +1,7 @@
 package app.marlboroadvance.mpvar.ui.browser.videolist
 
+import app.marlboroadvance.mpvar.R
+
 import android.content.Intent
 import android.os.Environment
 import androidx.activity.compose.BackHandler
@@ -7,6 +9,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
+import androidx.compose.ui.res.stringResource
 import app.marlboroadvance.mpvar.utils.media.OpenDocumentTreeContract
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically

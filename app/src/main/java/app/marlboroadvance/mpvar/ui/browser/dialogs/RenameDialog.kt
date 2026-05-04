@@ -1,5 +1,7 @@
 package app.marlboroadvance.mpvar.ui.browser.dialogs
 
+import app.marlboroadvance.mpvar.R
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,6 +26,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable

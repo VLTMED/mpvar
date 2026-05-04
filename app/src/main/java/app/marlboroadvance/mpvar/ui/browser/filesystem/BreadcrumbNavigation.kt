@@ -1,5 +1,7 @@
 package app.marlboroadvance.mpvar.ui.browser.filesystem
 
+import app.marlboroadvance.mpvar.R
+
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -17,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import app.marlboroadvance.mpvar.domain.browser.PathComponent
 
 @Composable

@@ -1,5 +1,7 @@
 package app.marlboroadvance.mpvar.ui.browser.dialogs
 
+import app.marlboroadvance.mpvar.R
+
 import android.content.Context
 import android.os.Environment
 import androidx.compose.foundation.clickable
@@ -42,6 +44,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import app.marlboroadvance.mpvar.utils.storage.StorageVolumeUtils
 import java.io.File
 

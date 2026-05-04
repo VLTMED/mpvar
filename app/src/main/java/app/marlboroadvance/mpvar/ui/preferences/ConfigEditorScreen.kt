@@ -1,5 +1,7 @@
 package app.marlboroadvance.mpvar.ui.preferences
 
+import app.marlboroadvance.mpvar.R
+
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.res.stringResource
 
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar

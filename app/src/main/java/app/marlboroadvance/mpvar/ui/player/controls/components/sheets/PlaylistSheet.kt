@@ -1,5 +1,7 @@
 package app.marlboroadvance.mpvar.ui.player.controls.components.sheets
 
+import app.marlboroadvance.mpvar.R
+
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
@@ -62,6 +64,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.res.stringResource
 import app.marlboroadvance.mpvar.presentation.components.PlayerSheet
 import app.marlboroadvance.mpvar.preferences.preference.collectAsState
 import app.marlboroadvance.mpvar.ui.theme.spacing

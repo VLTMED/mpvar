@@ -1,5 +1,7 @@
 package app.marlboroadvance.mpvar.ui.player.controls.components.sheets
 
+import app.marlboroadvance.mpvar.R
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -33,6 +35,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import app.marlboroadvance.mpvar.presentation.components.PlayerSheet
 import app.marlboroadvance.mpvar.ui.theme.spacing
 

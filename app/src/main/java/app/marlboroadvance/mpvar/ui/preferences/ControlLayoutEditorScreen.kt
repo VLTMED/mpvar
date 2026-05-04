@@ -1,5 +1,7 @@
 package app.marlboroadvance.mpvar.ui.preferences
 
+import app.marlboroadvance.mpvar.R
+
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -41,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import app.marlboroadvance.mpvar.preferences.AppearancePreferences
 import app.marlboroadvance.mpvar.preferences.PlayerButton
 import app.marlboroadvance.mpvar.preferences.allPlayerButtons
