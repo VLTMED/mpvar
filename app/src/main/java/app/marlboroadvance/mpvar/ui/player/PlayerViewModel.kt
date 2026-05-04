@@ -662,9 +662,8 @@ class PlayerViewModel(
     if (result.mediaType == "tv") {
       fetchTvShowDetails(result.id)
     } else {
-      // For movies, just search subtitles directly with the TMDB ID
-      searchSubtitles(result.title)
-      // Ideally we should pass the TMDB ID to searchSubtitles too if the API supports it
+      // Pass TMDB ID directly — more accurate than re-searching by title
+      searchSubtitles(result.id.toString(), year = result.releaseYear)
     }
   }
 
@@ -706,8 +705,9 @@ class PlayerViewModel(
 
   fun selectEpisode(episode: app.marlboroadvance.mpvar.repository.wyzie.WyzieEpisode) {
     _selectedEpisode.value = episode
-    val tvShowName = _selectedTvShow.value?.name ?: currentMediaTitle
-    searchSubtitles(tvShowName, episode.season_number, episode.episode_number)
+    // Use TMDB ID directly for precise matching — name-based search causes wrong show results
+    val tvShowId = _selectedTvShow.value?.id?.toString() ?: return
+    searchSubtitles(tvShowId, episode.season_number, episode.episode_number)
   }
 
   fun clearMediaSelection() {
@@ -720,10 +720,6 @@ class PlayerViewModel(
 
   // --- Subtitle Search ---
   fun searchSubtitles(query: String, season: Int? = null, episode: Int? = null, year: String? = null) {
-    if (subtitlesPreferences.wyzieApiKey.get().isBlank()) {
-      showToast("مفتاح Wyzie API غير مُعيَّن. اذهب إلى الإعدادات ← الترجمة لإضافة مفتاحك المجاني من sub.wyzie.io/redeem")
-      return
-    }
      viewModelScope.launch {
          _isSearchingSub.value = true
          wyzieRepository.search(query, season, episode, year)
