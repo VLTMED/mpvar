@@ -486,7 +486,7 @@ class PlayerViewModel(
         val displayName = fileName.take(30).let { if (fileName.length > 30) "$it..." else it }
         if (!silent) {
           withContext(Dispatchers.Main) {
-            showToast("$displayName added")
+            showToast("تمت إضافة: $displayName")
           }
         }
       }.onFailure {
@@ -662,9 +662,9 @@ class PlayerViewModel(
     if (result.mediaType == "tv") {
       fetchTvShowDetails(result.id)
     } else {
-      // For movies, just search subtitles directly with the TMDB ID
-      searchSubtitles(result.title)
-      // Ideally we should pass the TMDB ID to searchSubtitles too if the API supports it
+      // Pass the TMDB numeric ID directly — avoids a redundant TMDB lookup and ensures
+      // we always get subtitles for the exact movie the user selected.
+      searchSubtitles(result.id.toString())
     }
   }
 
@@ -718,23 +718,32 @@ class PlayerViewModel(
     _mediaSearchResults.value = emptyList()
   }
 
+  /** Clears all subtitle-search state — call when the search sheet is dismissed. */
+  fun clearSubtitleSearchState() {
+    subtitleSearchJob?.cancel()
+    _wyzieSearchResults.value = emptyList()
+    _isSearchingSub.value = false
+    _isDownloadingSub.value = false
+    clearMediaSelection()
+  }
+
   // --- Subtitle Search ---
+  private var subtitleSearchJob: kotlinx.coroutines.Job? = null
+
   fun searchSubtitles(query: String, season: Int? = null, episode: Int? = null, year: String? = null) {
-    if (subtitlesPreferences.wyzieApiKey.get().isBlank()) {
-      showToast("مفتاح Wyzie API غير مُعيَّن. اذهب إلى الإعدادات ← الترجمة لإضافة مفتاحك المجاني من sub.wyzie.io/redeem")
-      return
+    subtitleSearchJob?.cancel()
+    subtitleSearchJob = viewModelScope.launch {
+      delay(300) // Debounce — prevent firing on every keystroke
+      _isSearchingSub.value = true
+      wyzieRepository.search(query, season, episode, year)
+        .onSuccess { results ->
+          _wyzieSearchResults.value = results
+        }
+        .onFailure {
+          showToast("فشل البحث: ${it.message}")
+        }
+      _isSearchingSub.value = false
     }
-     viewModelScope.launch {
-         _isSearchingSub.value = true
-         wyzieRepository.search(query, season, episode, year)
-             .onSuccess { results ->
-                 _wyzieSearchResults.value = results
-             }
-             .onFailure {
-                 showToast("فشل البحث: ${it.message}")
-             }
-         _isSearchingSub.value = false
-     }
   }
 
   fun downloadSubtitle(subtitle: WyzieSubtitle) {

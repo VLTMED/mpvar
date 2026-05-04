@@ -135,11 +135,12 @@ fun PlayerSheets(
         onOpenSubtitleSettings = { onOpenPanel(Panels.SubtitleSettings) },
         onOpenSubtitleDelay = { onOpenPanel(Panels.SubtitleDelay) },
         onOpenOnlineSearch = {
+          // API key is optional — Wyzie works without one (key only raises rate limits).
+          // Show a soft hint if key is missing, but still allow access.
           if (subtitlesPreferencesForApiCheck.wyzieApiKey.get().isBlank()) {
-            viewModel.showToast("مفتاح Wyzie API غير مُعيَّن. أضف مفتاحك من الإعدادات ← الترجمة ← Wyzie API Key")
-          } else {
-            onShowSheet(Sheets.OnlineSubtitleSearch)
+            viewModel.showToast("تلميح: أضف مفتاح Wyzie API من الإعدادات لرفع حد الطلبات")
           }
+          onShowSheet(Sheets.OnlineSubtitleSearch)
         },
         onDismissRequest = onDismissRequest
       )
@@ -164,7 +165,10 @@ fun PlayerSheets(
       val selectedEpisode by viewModel.selectedEpisode.composeCollectAsState()
 
       OnlineSubtitleSearchSheet(
-        onDismissRequest = onDismissRequest,
+        onDismissRequest = {
+          viewModel.clearSubtitleSearchState()
+          onDismissRequest()
+        },
         onDownloadOnline = { viewModel.downloadSubtitle(it) },
         isSearching = isSearching,
         isDownloading = isDownloading,

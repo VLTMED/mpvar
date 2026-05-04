@@ -249,7 +249,7 @@ class WyzieSearchRepository(
                     }
                     searchId = result.id.toString()
                 } else {
-                    return@withContext Result.failure(Exception("Could not find media ID for '$query'"))
+                    return@withContext Result.failure(Exception("تعذّر العثور على معرّف الوسيط للعنوان: '$query'"))
                 }
             }
 
@@ -337,9 +337,9 @@ class WyzieSearchRepository(
                 // Wyzie API language format: single or multiple language codes are comma separated: `language=en,es`
                 language?.filter { !it.isWhitespace() }?.let { append("&language=${encode(it)}") }
                 
-                // Format and Encoding parameters
-                format?.split(",")?.filter { it.isNotBlank() }?.forEach { append("&${encode(it.trim())}=true") }
-                encoding?.split(",")?.filter { it.isNotBlank() }?.forEach { append("&${encode(it.trim())}=true") }
+                // Format and Encoding parameters — Wyzie API accepts `&format=srt,ass` and `&encoding=utf-8`
+                format?.takeIf { it.isNotBlank() }?.let { append("&format=${encode(it)}") }
+                encoding?.takeIf { it.isNotBlank() }?.let { append("&encoding=${encode(it)}") }
                 
                 // Source is a special case, "all" defaults to all sources implicitly, but adding specific sources works like `opensubtitles=true`
                 if (source != "all") {
@@ -505,7 +505,7 @@ class WyzieSearchRepository(
     private fun tmdbDirectSearch(query: String, apiKey: String): List<WyzieTmdbResult> {
         val url = "https://api.themoviedb.org/3/search/multi" +
             "?query=${URLEncoder.encode(query, "UTF-8")}" +
-            "&include_adult=false&language=ar&include_image_language=ar,en,null&page=1"
+            "&include_adult=false&language=en-US&include_image_language=ar,en,null&page=1"
         val request = Request.Builder()
             .url(url)
             .header("Authorization", "Bearer $apiKey")
@@ -513,9 +513,9 @@ class WyzieSearchRepository(
             .build()
         client.newCall(request).execute().use { response ->
             if (response.code == 401 || response.code == 403) {
-                throw IOException("Invalid TMDB API key. Check your key in Settings → Subtitles.")
+                throw IOException("مفتاح TMDB API غير صالح. تحقق من مفتاحك في الإعدادات ← الترجمة.")
             }
-            if (!response.isSuccessful) throw IOException("TMDB search failed (HTTP ${response.code}).")
+            if (!response.isSuccessful) throw IOException("فشل البحث عبر TMDB (HTTP ${response.code}).")
             val body = response.body?.string() ?: throw IOException("Empty body")
             val raw = json.decodeFromString<TmdbDirectResponse>(body)
             return raw.results
