@@ -1,5 +1,8 @@
 package app.marlboroadvance.mpvar.ui.browser.components
 
+import app.marlboroadvance.mpvar.R
+
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut

@@ -1,8 +1,11 @@
 package app.marlboroadvance.mpvar.ui.browser.dialogs
 
+import app.marlboroadvance.mpvar.R
+
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Environment
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.MarqueeAnimationMode
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable

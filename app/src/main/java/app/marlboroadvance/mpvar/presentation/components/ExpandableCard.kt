@@ -1,6 +1,9 @@
 package app.marlboroadvance.mpvar.presentation.components
 
+import app.marlboroadvance.mpvar.R
+
 import android.annotation.SuppressLint
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke

@@ -1,5 +1,8 @@
 package app.marlboroadvance.mpvar.ui.browser.cards
 
+import app.marlboroadvance.mpvar.R
+
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
