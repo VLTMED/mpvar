@@ -537,9 +537,9 @@
   <string name="permission_open_source_info">mpvAr مشروع مفتوح المصدر. يمكنك مراجعة الكود المصدري والتحقق من كيفية استخدام الأذونات بزيارة مستودعنا على GitHub:</string>
 
   <!-- Hardcoded strings - Arabic translations -->
-  <string name="control_layout_long_press_reorder">اضغط مطولاً لإعادة الترتيب. اضغط أيقونة '-' للإزالة.</string>
+  <string name="control_layout_long_press_reorder">اضغط مطولاً لإعادة الترتيب. اضغط أيقونة \'-\' للإزالة.</string>
   <string name="control_layout_drop_zone_empty">منطقة الإفلات فارغة</string>
-  <string name="control_layout_tap_available_palette">اضغط على الأزرار من 'اللوحة المتاحة' أدناه</string>
+  <string name="control_layout_tap_available_palette">اضغط على الأزرار من \'اللوحة المتاحة\' أدناه</string>
   <string name="control_layout_all_buttons_in_use">جميع الأزرار المتاحة قيد الاستخدام.</string>
   <string name="control_layout_icons_legend">دليل الأيقونات</string>
   <string name="pref_player_autoplay_next_video_title2">التشغيل التلقائي للفيديو التالي</string>
