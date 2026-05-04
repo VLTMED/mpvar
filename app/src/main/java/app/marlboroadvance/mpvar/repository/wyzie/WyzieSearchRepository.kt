@@ -498,7 +498,15 @@ class WyzieSearchRepository(
             }
             if (!response.isSuccessful) throw IOException("Media search failed (HTTP ${response.code}). Please try again.")
             val body = response.body?.string() ?: throw IOException("Empty body")
-            return json.decodeFromString<WyzieTmdbResponse>(body).results
+            return json.decodeFromString<WyzieTmdbResponse>(body).results.map { result ->
+                // Wyzie proxy may return poster as a partial path "/abc.jpg" — normalize to full URL
+                result.copy(
+                    poster = result.poster?.let {
+                        if (it.startsWith("http")) it
+                        else "https://image.tmdb.org/t/p/w185$it"
+                    }
+                )
+            }
         }
     }
 

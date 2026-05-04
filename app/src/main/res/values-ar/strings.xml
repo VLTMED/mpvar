@@ -523,7 +523,7 @@
 
   <!-- Wyzie subtitle API -->
   <string name="pref_wyzie_api_key_title">مفتاح واجهة Wyzie</string>
-  <string name="pref_wyzie_api_key_summary">مطلوب لاستخدام بحث الترجمة عبر sub.wyzie.io — احصل على مفتاح مجاني من sub.wyzie.io/register</string>
+  <string name="pref_wyzie_api_key_summary">اختياري — يرفع حد الطلبات. احصل على مفتاح مجاني من sub.wyzie.io/redeem</string>
   <string name="pref_wyzie_api_key_placeholder">wyzie-abc123xyz</string>
   <!-- Media Info screen -->
   <string name="media_info_title">معلومات الوسائط</string>
