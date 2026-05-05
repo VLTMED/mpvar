@@ -687,6 +687,8 @@ class PlayerViewModel(
   fun selectSeason(season: app.marlboroadvance.mpvar.repository.wyzie.WyzieSeason) {
     val tvShowId = _selectedTvShow.value?.id ?: return
     _selectedSeason.value = season
+    _wyzieSearchResults.value = emptyList()
+    _selectedEpisode.value = null
     
     viewModelScope.launch {
       _isFetchingEpisodes.value = true
