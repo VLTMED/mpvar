@@ -9,6 +9,7 @@ import app.marlboroadvance.mpvar.utils.media.ChecksumUtils
 import app.marlboroadvance.mpvar.utils.media.MediaInfoParser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -46,11 +47,12 @@ data class WyzieSubtitle(
 
 
 @Serializable
+@Serializable
 data class WyzieTmdbResult(
     val id: Int,
-    val mediaType: String,
-    val title: String,
-    val releaseYear: String? = null,
+    @SerialName("media_type") val mediaType: String = "",
+    val title: String = "",
+    @SerialName("release_year") val releaseYear: String? = null,
     val poster: String? = null,
     val backdrop: String? = null,
     val overview: String? = null
