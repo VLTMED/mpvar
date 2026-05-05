@@ -132,8 +132,8 @@ val LocalPlayerButtonsClickEvent = staticCompositionLocalOf { {} }
 
 fun <T> playerControlsExitAnimationSpec(): FiniteAnimationSpec<T> =
   tween(
-    durationMillis = 300,
-    easing = FastOutSlowInEasing,
+    durationMillis = 200,
+    easing = FastOutLinearInEasing,
   )
 
 fun <T> playerControlsEnterAnimationSpec(): FiniteAnimationSpec<T> =
