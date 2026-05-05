@@ -791,8 +791,9 @@ class PlayerViewModel(
   // ==================== Playback Control ====================
 
   fun pauseUnpause() {
+    // Read cached StateFlow value — avoids extra JNI roundtrip before toggling
+    val isPaused = MPVLib.propBoolean["pause"].value ?: false
     viewModelScope.launch(Dispatchers.IO) {
-      val isPaused = MPVLib.getPropertyBoolean("pause") ?: false
       if (isPaused) {
         // We are about to unpause, so request focus
         withContext(Dispatchers.Main) { host.requestAudioFocus() }
