@@ -283,14 +283,19 @@ class WyzieSearchRepository(
             // The Wyzie API often returns all languages regardless of query parameters.
             // We must strictly filter the results locally based on selected languages.
             val filteredResults = if (languages != null && languages != "all") {
-                val allowedLangs = languages.split(",").map { it.trim() }
-                results.filter { sub -> 
-                    // Map the subtitle language code (which is sometimes lowercase, sometimes not)
-                    val subLangCode = WyzieLanguages.ALL.entries.find { 
-                        it.value.equals(sub.language, ignoreCase = true) 
-                    }?.key ?: sub.language?.lowercase()
-                    
-                    allowedLangs.contains(subLangCode)
+                val allowedLangs = languages.split(",").map { it.trim().lowercase() }
+                results.filter { sub ->
+                    val subLang = sub.language?.lowercase() ?: return@filter false
+                    // Wyzie returns ISO code directly (e.g. "ar") — match directly
+                    // Also handle full-name fallback (e.g. "Arabic" → look up key "ar")
+                    val isoCode = if (WyzieLanguages.ALL.containsKey(subLang)) {
+                        subLang
+                    } else {
+                        WyzieLanguages.ALL.entries.find {
+                            it.value.equals(sub.language, ignoreCase = true)
+                        }?.key ?: subLang
+                    }
+                    allowedLangs.contains(isoCode)
                 }
             } else {
                 results
