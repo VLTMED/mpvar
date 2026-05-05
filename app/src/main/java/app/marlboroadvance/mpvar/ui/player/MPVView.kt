@@ -139,6 +139,8 @@ class MPVView(
 
     MPVLib.setOptionString("speed", playerPreferences.defaultSpeed.get().toString())
     MPVLib.setOptionString("vd-lavc-film-grain", "gpu")
+    // Allow MPV to use the EGL HDR colorspace when Android grants COLOR_MODE_HDR
+    MPVLib.setOptionString("target-colorspace-hints", "yes")
 
     val preciseSeek = playerPreferences.usePreciseSeeking.get()
     MPVLib.setOptionString("hr-seek", if (preciseSeek) "yes" else "no")
