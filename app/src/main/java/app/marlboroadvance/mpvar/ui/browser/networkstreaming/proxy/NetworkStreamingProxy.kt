@@ -633,8 +633,8 @@ class NetworkStreamingProxy private constructor() : NanoHTTPD("127.0.0.1", 0) {
 
       Log.d(TAG, "WebDAV stream request - Protocol: $protocol, URL: $url")
 
-      // Use OkHttp directly to add Range header support
-      val okHttpClient = okhttp3.OkHttpClient.Builder()
+      // Use shared WebDAV client — newBuilder() reuses thread pool and connection pool
+      val okHttpClient = webDavClient.newBuilder()
         .addInterceptor { chain ->
           val request = chain.request().newBuilder()
             .addHeader("Range", "bytes=$offset-")
