@@ -54,6 +54,11 @@ class NetworkStreamingProxy private constructor() : NanoHTTPD("127.0.0.1", 0) {
 
   // Store active connections and their clients
   private val activeStreams = ConcurrentHashMap<String, StreamInfo>()
+  // Shared client for WebDAV range requests — avoids creating a new thread pool per seek
+  private val webDavRangeClient: okhttp3.OkHttpClient = okhttp3.OkHttpClient.Builder()
+    .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+    .readTimeout(0, java.util.concurrent.TimeUnit.SECONDS)
+    .build()
 
   data class StreamInfo(
     val connection: NetworkConnection,
@@ -634,7 +639,7 @@ class NetworkStreamingProxy private constructor() : NanoHTTPD("127.0.0.1", 0) {
       Log.d(TAG, "WebDAV stream request - Protocol: $protocol, URL: $url")
 
       // Use shared WebDAV client — newBuilder() reuses thread pool and connection pool
-      val okHttpClient = webDavClient.newBuilder()
+      val okHttpClient = webDavRangeClient.newBuilder()
         .addInterceptor { chain ->
           val request = chain.request().newBuilder()
             .addHeader("Range", "bytes=$offset-")
