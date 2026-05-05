@@ -793,6 +793,13 @@ class PlayerActivity :
     )
     window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+    // Request HDR output if the display supports it (API 26+, works without Vulkan/Android 13)
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+      val hdrTypes = display?.hdrCapabilities?.supportedHdrTypes
+      if (!hdrTypes.isNullOrEmpty()) {
+        window.colorMode = android.content.pm.ActivityInfo.COLOR_MODE_HDR
+      }
+    }
   }
 
   @RequiresApi(Build.VERSION_CODES.P)
