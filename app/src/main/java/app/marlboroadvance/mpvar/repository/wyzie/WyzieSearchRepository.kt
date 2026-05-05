@@ -47,7 +47,6 @@ data class WyzieSubtitle(
 
 
 @Serializable
-@Serializable
 data class WyzieTmdbResult(
     val id: Int,
     @SerialName("media_type") val mediaType: String = "",
