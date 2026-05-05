@@ -796,7 +796,7 @@ class PlayerActivity :
     // Request HDR output if the display supports it (API 26+, works without Vulkan/Android 13)
     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
       val hdrTypes = display?.hdrCapabilities?.supportedHdrTypes
-      if (!hdrTypes.isNullOrEmpty()) {
+      if (hdrTypes != null && hdrTypes.isNotEmpty()) {
         window.colorMode = android.content.pm.ActivityInfo.COLOR_MODE_HDR
       }
     }
