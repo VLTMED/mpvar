@@ -253,9 +253,10 @@ class WyzieSearchRepository(
                 }
             }
 
-            // Do NOT filter by language — let Wyzie return ALL available subtitles
-            // Language preference applies only to SubDL, not Wyzie
-            val languages: String? = null
+            val selectedLangsRaw = preferences.subdlLanguages.get()
+            val languages = if (selectedLangsRaw.isNotEmpty() && !selectedLangsRaw.contains("all")) {
+                selectedLangsRaw.joinToString(",").lowercase()
+            } else null
 
             val sources = preferences.wyzieSources.get()
             val sourceParam = if (sources.isEmpty() || sources.contains("all")) "all" else sources.joinToString(",").lowercase()
@@ -279,7 +280,23 @@ class WyzieSearchRepository(
                 hi = if (hearingImpaired) true else null
             )
             
-            val sortedResults = results.sortedWith(compareByDescending<WyzieSubtitle> { sub ->
+            // The Wyzie API often returns all languages regardless of query parameters.
+            // We must strictly filter the results locally based on selected languages.
+            val filteredResults = if (languages != null && languages != "all") {
+                val allowedLangs = languages.split(",").map { it.trim() }
+                results.filter { sub -> 
+                    // Map the subtitle language code (which is sometimes lowercase, sometimes not)
+                    val subLangCode = WyzieLanguages.ALL.entries.find { 
+                        it.value.equals(sub.language, ignoreCase = true) 
+                    }?.key ?: sub.language?.lowercase()
+                    
+                    allowedLangs.contains(subLangCode)
+                }
+            } else {
+                results
+            }
+            
+            val sortedResults = filteredResults.sortedWith(compareByDescending<WyzieSubtitle> { sub ->
                 val name = sub.displayName.lowercase()
                 val q = query.lowercase()
                 var score = 0

@@ -633,7 +633,6 @@ class PlayerViewModel(
   // --- Media Search and Series Management ---
 
   private var mediaSearchJob: Job? = null
-  private var subtitleSearchJob: Job? = null
 
   fun searchMedia(query: String) {
     mediaSearchJob?.cancel()
@@ -721,21 +720,17 @@ class PlayerViewModel(
 
   // --- Subtitle Search ---
   fun searchSubtitles(query: String, season: Int? = null, episode: Int? = null, year: String? = null) {
-    subtitleSearchJob?.cancel()
-    subtitleSearchJob = viewModelScope.launch {
-      _isSearchingSub.value = true
-      _wyzieSearchResults.value = emptyList()
-      wyzieRepository.search(query, season, episode, year)
-        .onSuccess { results ->
-          _wyzieSearchResults.value = results
-        }
-        .onFailure { err ->
-          if (err !is kotlinx.coroutines.CancellationException) {
-            showToast("فشل البحث: ${err.message}")
-          }
-        }
-      _isSearchingSub.value = false
-    }
+     viewModelScope.launch {
+         _isSearchingSub.value = true
+         wyzieRepository.search(query, season, episode, year)
+             .onSuccess { results ->
+                 _wyzieSearchResults.value = results
+             }
+             .onFailure {
+                 showToast("فشل البحث: ${it.message}")
+             }
+         _isSearchingSub.value = false
+     }
   }
 
   fun downloadSubtitle(subtitle: WyzieSubtitle) {
