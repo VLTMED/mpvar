@@ -138,7 +138,7 @@ class MPVView(
     }
 
     MPVLib.setOptionString("speed", playerPreferences.defaultSpeed.get().toString())
-    MPVLib.setOptionString("vd-lavc-film-grain", "cpu")
+    MPVLib.setOptionString("vd-lavc-film-grain", "gpu")
 
     val preciseSeek = playerPreferences.usePreciseSeeking.get()
     MPVLib.setOptionString("hr-seek", if (preciseSeek) "yes" else "no")
